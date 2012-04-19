@@ -1,0 +1,58 @@
+<div id='postdetail' style='font-size:16px;width:500px;margin:0 auto;'>
+	<?php foreach($this->row as $num => $arrone){?>
+		<br>
+		<div id='post<?php echo $arrone['id']?>' class='post' style="width:500px;">
+			<div id='title<?php echo $arrone['id']?>' class='title' style="border:1px solid #000;width:480px;padding:5px;">
+				<?php echo $arrone['username'];?>问：<?php echo $arrone['title'];?>
+				<div id='detail<?php echo $arrone['id'];?>' class='detail' style='width:50px;text-align:center;float:right;'>
+					<a href="/index/detail/id/<?php echo $arrone['id']?>" target="_blank">详情</a>
+				</div>
+			</div>
+			<div id='content<?php echo $arrone['id'];?>' class='content' style='border-left:1px solid #000; border-right:1px solid #000;width:480px; padding:5px;'><?php echo $arrone['content'];?></div>
+			<div id='lastreply<?php echo $arrone['id'];?>' class='lastreply' style="border:1px solid #000;width:480px;padding:5px;">
+				<?php if(!isset($arrone['lastReply'])){echo "暂无回复！";}else{?>
+				<?php echo $arrone['lastReplyUsername'];?>答：<?php echo $arrone['lastReply'];}?>
+			</div>
+		</div>
+	<?php }?>
+	<div id='pageshow' style='width:500px;text-align:center;'><br><?php echo $this->pageshow;?></div>
+</div>
+<div id='add' style='width:500px;text-align:center;margin:0 auto;margin-top:50px;font-size:16px;'>
+	<table width="95%" border="0" cellpadding="0" cellspacing="0">
+	  <tr>
+	    <td height="35" colspan="2" align="center">我要提问</td>
+	  </tr>
+	  <tr>
+	    <td width="100px" height="35" align="right">姓名：</td>
+	    <td align='left'><input type="text" name="username" id="username" /></td>
+	  </tr>
+	  <tr>
+	    <td height="35" align="right" valign="top" style="vertical-align:top;">标题：</td>
+	    <td align='left'><input type="text" name="title" id="title" size="35" /></td>
+	  </tr>
+	  <tr>
+	    <td height="35" align="right" valign="top" style="vertical-align:top;">提问：</td>
+	    <td align='left'><textarea name="content" id="content" cols="35" rows="3" style="width:300px;"></textarea></td>
+	  </tr>
+	  <tr>
+	    <td height="35" colspan="2" align="center" style="vertical-align:middle;"><input type="button" name="button" id="submit" value="提交" /></td>
+	  </tr>
+	</table>
+</div>
+<script type="text/javascript">
+$('#add #submit').click(function(){
+	var username = $('#add #username').val();
+	var title = $('#add #title').val();
+	var content = $('#add #content').val();
+	var val = 'username/'+username+'/title/'+title+'/content/'+content;
+	if(username && title && content){
+		$.ajax({
+			type: "POST",
+			url: '/index/add/orgCode/<?php echo $this->orgCode;?>/'+val,
+			success: function(obj) {	
+				window.location.href='/index/detail/id/'+obj;			
+			}
+		});
+	}
+});
+</script>

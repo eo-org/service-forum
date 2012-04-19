@@ -1,0 +1,25 @@
+<div id='messagedetail' class='messagedetail' style='font-size:16px;width:500px;margin:0 auto;'>
+	<?php $row = $this->row;?>
+	<br>
+	<div id='message<?php echo $row['id']?>' class='message' style="width:500px;">
+		<div id='username<?php echo $row['id']?>' class='username' style="border:1px solid #000;width:480px;padding:5px;">
+			<?php echo $row['username'];?>问：<?php echo $row['title'];?>
+		</div>
+		<div id='messagecontent<?php echo $row['id']?>' class='messagecontent' style='border-left:1px solid #000; border-right:1px solid #000;border-bottom:1px solid #000;width:480px; padding:5px;'><?php echo $row['content'];?></div>
+		<br>
+		<?php if($row['isShow']==0){ ?>
+			<div id='messagesuccess' class='messagesuccess' style="border:1px solid #000;width:480px;padding:5px;">
+				<?php echo "你的留言已成功，审核中····";?>&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="/index/index/orgCode/<?php echo $row['orgCode']?>">返回</a>
+			</div>
+		<?php }else{?>
+			<?php foreach ($this->rowset as $num => $arrone) {?>	
+				<div id='messagelastreply<?php echo $arrone['id'];?>' class='messagelastreply' style="border:1px solid #000;width:480px;padding:5px;">
+					<?php if(!isset($arrone['lastReply'])){echo "暂无回复！";break;}else{?>
+					<?php echo $arrone['lastReplyUsername'];?>答：<?php echo $arrone['lastReply'];}?>
+				</div>
+				<br>
+			<?php }}?>
+	</div>
+	<div id='pageshow' style='width:500px;text-align:center;'><br><?php echo $this->pageshow;?></div>
+</div>
