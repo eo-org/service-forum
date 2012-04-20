@@ -28,7 +28,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     	Zend_Controller_Action_HelperBroker::addPath(APP_PATH.'/helpers', 'Helper');
         $controller = Zend_Controller_Front::getInstance();
         $controller->setControllerDirectory(array(
-            'default' => APP_PATH.'/default/controllers'
+            'default' => APP_PATH.'/default/controllers',
+        	'rest' => APP_PATH.'/rest/controllers',
+        	'admin' => APP_PATH.'/admin/controllers'
         ));
         
         $controller->throwExceptions(true);

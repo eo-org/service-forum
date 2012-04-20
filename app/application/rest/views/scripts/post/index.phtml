@@ -1,0 +1,69 @@
+<div style='font-size:16px;width:500px;margin:0 auto;'>
+	<?php foreach($this->row as $num => $arrone){?>
+		<br>
+		<div id='post<?php echo $arrone['id']?>' style="width:500px;">
+			<div style="border:1px solid #000;width:480px;padding:5px;">
+				<?php echo $arrone['question'];?>问：<?php echo $arrone['content'];?>
+				<div id='detail' class='<?php echo $arrone['id']?>' name='sel' style='width:50px;text-align:center;float:right;'>更多</div>
+			</div>
+			<div style="border:1px solid #000;width:480px;padding:5px;">
+				<?php if(!isset($arrone['username'])){echo "暂无回复！";}else{?>
+				<?php echo $arrone['username'];?>答：<?php echo $arrone['repContent'];}?>
+			</div>
+		</div>
+	<?php }?>
+	<div style='width:500px;text-align:center;'><?php echo $this->pageshow;?></div>
+</div>
+<div id='add' style='width:500px;text-align:center;margin:0 auto;margin-top:50px;font-size:16px;'>
+	<table width="95%" border="0" cellpadding="0" cellspacing="0">
+	  <tr>
+	    <td height="35" colspan="2" align="center">我要提问</td>
+	  </tr>
+	  <tr>
+	    <td width="50px" height="35" align="right">姓名：</td>
+	    <td align='left'><input type="text" name="question" id="question" /></td>
+	  </tr>
+	  <tr>
+	    <td height="35" align="right" valign="top" style="vertical-align:top;">提问：</td>
+	    <td align='left'><textarea name="issubject" id="issubject" cols="35" rows="3" style="width:300px;"></textarea></td>
+	  </tr>
+	  <tr>
+	    <td height="35" colspan="2" align="center"><input type="button" name="button" id="submit" value="提交" />
+	    <input type="button" name="button2" id="button2" value="返回" onclick="javascript:history.go(-1);" /></td>
+	  </tr>
+	</table>
+</div>
+<script type="text/javascript">
+$('#detail').live("click",function(){
+	var id = $(this).attr('class');
+	var name = $(this).attr('name');
+	if(name == 'sel'){
+		$.ajax({
+			type: "POST",
+			url: '/forum/post/selpost/id/'+id,
+			success: function(obj) {	
+				$("#post"+id).append(obj);				
+			}
+		});
+		$("#post"+id+" #detail").attr('name','re');
+		$("#post"+id+" #detail").html('收起');
+	}else{
+		$("#post"+id+" #detail").attr('name','sel');
+		$("#post"+id+" #detail").html('更多');
+		$("#post"+id+" #html"+id).remove();
+	}
+});
+$('#add #submit').click(function(){
+	var question = $('#add #question').val();
+	var issubject = $('#add #issubject').val();
+	if(question && issubject){
+		$.ajax({
+			type: "POST",
+			url: '/forum/post/add/orgcode/<?php echo $this->orgcode;?>/question/'+question+'/issubject/'+issubject,
+			success: function(obj) {	
+				window.location.href='/forum/post/index/orgcode/<?php echo $this->orgcode;?>';			
+			}
+		});
+	}
+});
+</script>

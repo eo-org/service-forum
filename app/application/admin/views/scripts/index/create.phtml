@@ -1,11 +1,38 @@
+<div id='messagedetail' class='messagedetail' style='font-size:16px;width:500px;margin:0 auto;'>
+	<?php $row = $this->row;?>
+	<br>
+	<div id='message' class='message' style="width:500px;">
+		<div id='username' class='username' style="border:1px solid #000;width:480px;padding:5px;">
+			<?php echo $row[0]['username'];?>问：<?php echo $row[0]['title'];?>
+		</div>
+		<div id='messagecontent' class='messagecontent' style='border-left:1px solid #000; border-right:1px solid #000;border-bottom:1px solid #000;width:480px; padding:5px;'>
+			<?php echo $row[0]['content'];?>
+			<div id='editdetail' style='width:50px;text-align:center;float:right;'>
+					<a href="#">修改</a>
+			</div>
+		</div>
+	</div>
+	<br>
+	<div>
+		<?php foreach ($row as $num => $arrone) {?>	
+			<div id='messagelastreply<?php echo $arrone['id'];?>' class='messagelastreply' style="border:1px solid #000;width:480px;padding:5px;">
+				<?php if(!isset($arrone['lastReply'])){echo "暂无回复！";break;}else{?>
+				<?php echo $arrone['lastReplyUsername'];?>答：<?php echo $arrone['lastReply'];}?>
+			</div>
+			<br>	
+		<?php }?>
+		<div id='pageshow' style='width:480px;text-align:center;'><br><?php echo $this->pageshow;?></div>
+	</div>
+</div>
+<br>
 <form method="post">
-	<table width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
+	<table width="95%" border="0" align="center" cellpadding="0" cellspacing="0" style="font-size:16px;">
 	  <tr>
-	    <td height="35" colspan="2" align="center"></td>
+	    <td height="35" colspan="2" align="center">我的回复</td>
 	  </tr>
 	  <tr>
-	    <td width="36%" height="35" align="right">姓名：</td>
-	    <td width="64%" align="left"><input type="text" name="lastReplyUsername" id="lastReplyUsername" />    
+	    <td width="40" height="35" align="right">姓名：</td>
+	    <td width="60%" align="left"><input type="text" name="lastReplyUsername" id="lastReplyUsername" />    
 	    </td>
 	  </tr>
 	  <tr>
@@ -14,7 +41,44 @@
 	    </tr>
 	  <tr>
 	    <td height="35" colspan="2" align="center" style="vertical-align:middle;"><input type="submit" name="button" id="button" value="提交" />
-	      <input type="button" name="button2" id="button2" value="返回" onclick="javascript:history.go(-1);" /></td>
+	      <input type="button" name="button2" id="button2" value="返回" onclick="location.href='http://forum.eo.test/admin/index/index/orgCode/<?php echo $row[0]['orgCode'];?>'" /></td>
 	  </tr>
 	</table>
 </form>
+<script type="text/javascript">
+$('#editdetail').live("click",function(){
+	var inputtitle = "<?php echo $row[0]['username'];?>问：<input type='text' name='title' id='title' size='50' value='<?php echo $row[0]['title'];?>' />";
+	$('#username').html(inputtitle);
+	var textcontent = "<textarea name='content' id='content' cols='40' rows='3'><?php echo $row[0]['content'];?></textarea>";
+		textcontent+= "<br><select name='isshow' id='isshow'><option value='1' <?php if($row[0]['isshow']==1){echo 'selected';}?>>显示</option>";
+		textcontent+= "<option value='0' <?php if($row[0]['isshow']==0){echo 'selected';}?>>隐藏</option></select><br>&nbsp;&nbsp;&nbsp;&nbsp;";
+		textcontent+= "&nbsp;&nbsp;&nbsp;&nbsp;<input type='button' name='submitpost' id='submitpost' value='确定' /><input type='button' name='return' id='return' value='返回' />";
+	$('#messagecontent').html(textcontent);
+});
+$('#return').live("click",function(){
+	$.ajax({
+		type: "POST",
+		url: '/admin/index/edit/id/<?php echo $this->id;?>',
+		success: function(obj) {	
+			$('#message').html(obj);
+		}
+	});
+	return false;
+});
+$('#submitpost').live("click",function(){
+	var title = $('#username #title').val();
+	var content = $('#messagecontent #content').val();
+	var isshow = $('#messagecontent #isshow').val();
+	var val = '/title/'+title+'/content/'+content+'/isshow/'+isshow;
+	if( title && content){
+		$.ajax({
+			type: "POST",
+			url: '/admin/index/edit/id/<?php echo $this->id;?>'+val,
+			success: function(obj) {	
+				$('#message').html(obj);			
+			}
+		});
+	}
+	return false;
+});
+</script>

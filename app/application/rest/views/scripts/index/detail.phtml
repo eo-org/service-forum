@@ -10,7 +10,7 @@
 		<?php if($row['isShow']==0){ ?>
 			<div id='messagesuccess' class='messagesuccess' style="border:1px solid #000;width:480px;padding:5px;">
 				<?php echo "你的留言已成功，审核中····";?>&nbsp;&nbsp;&nbsp;&nbsp;
-				<a href="/default/index/index/orgCode/<?php echo $row['orgCode']?>">返回</a>
+				<a href="/rest/index/index/orgCode/<?php echo $row['orgCode']?>">返回</a>
 			</div>
 		<?php }else{?>
 			<?php foreach ($this->rowset as $num => $arrone) {?>	

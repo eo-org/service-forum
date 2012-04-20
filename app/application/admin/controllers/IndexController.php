@@ -1,11 +1,9 @@
 <?php
-require CONTAINER_PATH.'/app/application/forms/Page.php';
 class Admin_IndexController extends Zend_Controller_Action
 {
 	public function init()
 	{
 		$this->_tb = Class_Base::_('Post');
-		$this->_pagelist = new Form_Page();
 	}
 	public function indexAction()
 	{
@@ -36,7 +34,7 @@ class Admin_IndexController extends Zend_Controller_Action
 						'action' => 'contextMenu',
 						'menuItems' => array(
 								array('回复','/admin/index/create/id/'),
-								array('编辑','/admin/index/edit/id/')
+								array('删除','/admin/index/del/id/')
 						)
 				),
 				'initSelectRun' => 'true',
@@ -95,27 +93,28 @@ class Admin_IndexController extends Zend_Controller_Action
 	public function createAction()
 	{
 		$id = $this->getRequest()->getParam('id');
+		$selector = $this->_tb->select(false)->setIntegrityCheck(false)
+							  ->from(array('p'=>'post'),array('p.id','p.parentId','p.username','p.title','p.content','p.isshow','p.orgCode'))
+							  ->joinLeft(array('o'=>'post'),"p.parentId = o.parentId and p.orgCode = o.orgCode",array('o.lastReplyUsername','o.lastReply'))
+							  ->where('p.id = ?',$id);
+		$row = $this->_tb->fetchAll($selector)->toArray();
 		if($this->getRequest()->isPost()){
 			$lastReplyUsername = $this->getRequest()->getParam('lastReplyUsername');
 			$lastReply = $this->getRequest()->getParam('lastReply');
-			$selector = $this->_tb->select(false)
-								  ->from($this->_tb,'*')
-								  ->where('id = ?',$id);
-			$row = $this->_tb->fetchRow($selector)->toArray();
-			if(!empty($row['lastReply'])){
+			if(!empty($row[0]['lastReply'])){
 				$cousql = $this->_tb->select(false)
 									->from($this->_tb,array('count(*) as num'))
-									->where('parentId = ?',$row['parentId'])
-									->where('orgCode = ?',$row['orgCode'])
+									->where('parentId = ?',$row[0]['parentId'])
+									->where('orgCode = ?',$row[0]['orgCode'])
 									->group('parentId')
 									->group('orgCode');
 				$cou = $this->_tb->fetchRow($cousql)->toArray();
 				$arrin = array(
-						'parentid' => $row['parentId'],
+						'parentid' => $row[0]['parentId'],
 						'sort' => $cou['num']+1,
-						'lastReplyUsername' => $row['lastReplyUsername'],
-						'lastReply' => $row['lastReply'],
-						'orgCode' => $row['orgCode']
+						'lastReplyUsername' => $row[0]['lastReplyUsername'],
+						'lastReply' => $row[0]['lastReply'],
+						'orgCode' => $row[0]['orgCode']
 				);
 				$this->_tb->insert($arrin);
 			}
@@ -125,31 +124,43 @@ class Admin_IndexController extends Zend_Controller_Action
 			);
 			$where = 'id = '.$id;
 			$this->_tb->update($arrup,$where);
-			$this->_redirect('/admin/index/index/orgCode/'.$row['orgCode']);
-				
+			$this->_redirect('/admin/index/index/orgCode/'.$row[0]['orgCode']);
 		}
+		$this->view->row = $row;
 		$this->view->id = $id;
 	}
 		
 	public function editAction()
 	{
 		$id = $this->getRequest()->getParam('id');
-		$row = $this->_tb->find($id)->current()->toArray();
-		if($this->getRequest()->isPost()){
-			$show = $this->getRequest()->getParam('showid');
-			$issubject = $this->getRequest()->getParam('issubject');
-			$showid = 0;
-			if($show == '显示'){
-				$showid = 1;
-			}
+		$title = $this->getRequest()->getParam('title');
+		$content = $this->getRequest()->getParam('content');
+		$isshow = $this->getRequest()->getParam('isshow');
+		if(!empty($title)){
 			$arrup = array(
-					'content' => $issubject,
-					'isShow' => $showid
+					'title' => $title,
+					'content' => $content,
+					'isShow' => $isshow
 					);
 			$where = 'id = '.$id;
 			$this->_tb->update($arrup,$where);
-			$this->_redirect('/admin/index/index/orgCode/'.$row['orgCode']);
 		}
-		$this->view->row = $row;
+		$row = $this->_tb->find($id)->current()->toArray();
+		$post = "<div id='username' class='username' style='border:1px solid #000;width:480px;padding:5px;'>".$row['username']."问：".$row['title']."</div>";
+		$post.= "<div id='messagecontent' class='messagecontent' style='border-left:1px solid #000; border-right:1px solid #000;border-bottom:1px solid #000;width:480px; padding:5px;'>";
+		$post.= $row['content']."<div id='editdetail' style='width:50px;text-align:center;float:right;'><a href='#'>修改</a></div></div>";
+		echo $post;
+		exit;
+	}
+	
+	public function delAction()
+	{
+		$id = $this->getRequest()->getParam('id');
+		$row = $this->_tb->find($id)->current()->toArray();
+		$where = 'id = '.$id;
+		if(!empty($row)){
+			$this->_tb->delete($where);
+		}
+		$this->_redirect('/admin/index/index/orgCode/'.$row['orgCode']);
 	}
 }

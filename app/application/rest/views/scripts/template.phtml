@@ -1,0 +1,18 @@
+<?php
+$request = Zend_Controller_Front::getInstance()->getRequest();
+?>
+<?=$this->doctype() ?>
+<html>
+<head>
+<?=$this->partial('head.phtml', $this) ?>
+
+</head>
+
+<body>
+	<div class='logo'></div>
+	<div class='under-desc'>
+		<?=$this->layout()->content ?>
+	</div>
+	<div class='footer'></div>
+</body>
+</html>

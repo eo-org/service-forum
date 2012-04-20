@@ -1,0 +1,42 @@
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" >
+<script type="text/javascript" src="<?=Class_Server::libUrl()?>/lib/script/jquery-1.7.1.js"></script>
+<div id='add' style='width:500px;text-align:center;margin:0 auto;margin-top:50px;font-size:16px;'>
+	<table width="95%" border="0" cellpadding="0" cellspacing="0">
+	  <tr>
+	    <td height="35" colspan="2" align="center">我要提问</td>
+	  </tr>
+	  <tr>
+	    <td width="100px" height="35" align="right">姓名：</td>
+	    <td align='left'><input type="text" name="username" id="username" /></td>
+	  </tr>
+	  <tr>
+	    <td height="35" align="right" valign="top" style="vertical-align:top;">标题：</td>
+	    <td align='left'><input type="text" name="title" id="title" size="35" /></td>
+	  </tr>
+	  <tr>
+	    <td height="35" align="right" valign="top" style="vertical-align:top;">提问：</td>
+	    <td align='left'><textarea name="content" id="content" cols="35" rows="3" style="width:300px;"></textarea></td>
+	  </tr>
+	  <tr>
+	    <td height="35" colspan="2" align="center" style="vertical-align:middle;"><input type="button" name="button" id="submit" value="提交" /></td>
+	  </tr>
+	</table>
+</div>
+<script type="text/javascript">
+$('#add #submit').live("click",function(){
+	var username = $('#username').val();
+	var title = $('#title').val();
+	var content = $('#content').val();
+	var val = 'username/'+username+'/title/'+title+'/content/'+content;
+	if(username && title && content){
+		$.ajax({
+			type: "POST",
+			url: '/index/create/orgCode/<?php echo $this->orgCode;?>/'+val,
+			success: function(obj) {	
+				alert('留言成功！内容审核中····');	
+				window.location.href='/index/create/orgCode/<?php echo $this->orgCode;?>';	
+			}
+		});
+	}
+});
+</script>

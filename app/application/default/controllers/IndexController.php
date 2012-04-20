@@ -1,5 +1,5 @@
 <?php
-require CONTAINER_PATH.'/app/application/forms/Page.php';
+require CONTAINER_PATH.'/app/application/default/forms/Page.php';
 class IndexController extends Zend_Controller_Action
 {
 	private $_tb;
@@ -32,7 +32,7 @@ class IndexController extends Zend_Controller_Action
 		$num = $rowset['num'];
 		$this->view->orgCode = $orgCode;
 		//Zend_Debug::dump($row);
-		$this->view->pageshow = $this->_pagelist->getPage($page,$num,"/default/post/index/orgCode/".$orgCode,$pagesize);
+		$this->view->pageshow = $this->_pagelist->getPage($page,$num,"/default/index/index/orgCode/".$orgCode,$pagesize);
 	}
 	
 	public function addAction()
@@ -78,6 +78,37 @@ class IndexController extends Zend_Controller_Action
 		$num = $rownum['num'];
 		$this->view->row = $row;
 		$this->view->rowset = $rowset;
-		$this->view->pageshow = $this->_pagelist->getPage($page,$num,"/default/post/index/orgCode/".$row['orgCode'],$pagesize);
+		$this->view->pageshow = $this->_pagelist->getPage($page,$num,"/default/index/index/orgCode/".$row['orgCode'],$pagesize);
+	}
+	
+	public function createAction()
+	{
+		//$callback = $this->getRequest()->getParam('callback');
+		$orgCode = $this->getRequest()->getParam('orgCode');
+		if($this->getRequest()->isPost()){
+			$username = $this->getRequest()->getParam('username');
+			$title = $this->getRequest()->getParam('title');
+			$content = $this->getRequest()->getParam('content');
+			$selector = $this->_tb->select(false)
+								  ->from($this->_tb,array('max(parentId) as num'))
+								  ->where('sort = ?',1)
+								  ->where('orgCode = ?',$orgCode);
+			$row = $this->_tb->fetchRow($selector)->toArray();
+			$arrin = array(
+					'parentId' => $row['num']+1,
+					'sort' => 1,
+					'username' => $username,
+					'title' => $title,
+					'content' => $content,
+					'orgCode' => $orgCode
+			);
+			$row = $this->_tb->insert($arrin);
+		}
+		$this->view->orgCode = $orgCode;
+// 		$row = Zend_Json::encode($row);
+		
+// 		$this->getResponse()->appendBody($callback.'('.$row.')');
+// 		$this->_helper->viewRenderer->setNoRender(true);
+		$this->_helper->layout()->disableLayout();
 	}
 }

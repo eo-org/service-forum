@@ -5,7 +5,7 @@
 			<div id='title<?php echo $arrone['id']?>' class='title' style="border:1px solid #000;width:480px;padding:5px;">
 				<?php echo $arrone['username'];?>问：<?php echo $arrone['title'];?>
 				<div id='detail<?php echo $arrone['id'];?>' class='detail' style='width:50px;text-align:center;float:right;'>
-					<a href="/default/index/detail/id/<?php echo $arrone['id']?>" target="_blank">详情</a>
+					<a href="/rest/index/detail/id/<?php echo $arrone['id']?>" target="_blank">详情</a>
 				</div>
 			</div>
 			<div id='content<?php echo $arrone['id'];?>' class='content' style='border-left:1px solid #000; border-right:1px solid #000;width:480px; padding:5px;'><?php echo $arrone['content'];?></div>
@@ -48,9 +48,9 @@ $('#add #submit').click(function(){
 	if(username && title && content){
 		$.ajax({
 			type: "POST",
-			url: '/default/index/add/orgCode/<?php echo $this->orgCode;?>/'+val,
+			url: '/rest/index/add/orgCode/<?php echo $this->orgCode;?>/'+val,
 			success: function(obj) {	
-				window.location.href='/default/index/detail/id/'+obj;			
+				window.location.href='/rest/index/detail/id/'+obj;			
 			}
 		});
 	}
