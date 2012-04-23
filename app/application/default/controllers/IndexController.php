@@ -83,26 +83,30 @@ class IndexController extends Zend_Controller_Action
 	
 	public function createAction()
 	{
-		//$callback = $this->getRequest()->getParam('callback');
 		$orgCode = $this->getRequest()->getParam('orgCode');
 		if($this->getRequest()->isPost()){
-			$username = $this->getRequest()->getParam('username');
-			$title = $this->getRequest()->getParam('title');
-			$content = $this->getRequest()->getParam('content');
-			$selector = $this->_tb->select(false)
-								  ->from($this->_tb,array('max(parentId) as num'))
-								  ->where('sort = ?',1)
-								  ->where('orgCode = ?',$orgCode);
-			$row = $this->_tb->fetchRow($selector)->toArray();
-			$arrin = array(
-					'parentId' => $row['num']+1,
-					'sort' => 1,
-					'username' => $username,
-					'title' => $title,
-					'content' => $content,
-					'orgCode' => $orgCode
-			);
-			$row = $this->_tb->insert($arrin);
+			$username = trim($this->getRequest()->getParam('username'));
+			$title = trim($this->getRequest()->getParam('title'));
+			$content = trim($this->getRequest()->getParam('content'));
+			if(!empty($username) && !empty($title) && !empty($content) ){
+				$selector = $this->_tb->select(false)
+									  ->from($this->_tb,array('max(parentId) as num'))
+									  ->where('sort = ?',1)
+									  ->where('orgCode = ?',$orgCode);
+				$row = $this->_tb->fetchRow($selector)->toArray();
+				$arrin = array(
+						'parentId' => $row['num']+1,
+						'sort' => 1,
+						'username' => $username,
+						'title' => $title,
+						'content' => $content,
+						'orgCode' => $orgCode
+				);
+				$row = $this->_tb->insert($arrin);
+				$this->view->message = "留言成功！内容审核中···";
+			}else{
+				$this->view->message = "名称、标题、内容不能为空！";
+			}
 		}
 		$this->view->orgCode = $orgCode;
 // 		$row = Zend_Json::encode($row);
