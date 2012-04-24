@@ -7,8 +7,11 @@ class Admin_IndexController extends Zend_Controller_Action
 	}
 	public function indexAction()
 	{
-		$orgCode = $this->getRequest()->getParam('orgCode');
-		$pathurl = "/admin/index/get-form-json/orgCode/".$orgCode.'/';
+		if(empty($_SESSION['orgCode'])){
+			$orgCode = $this->getRequest()->getParam('orgCode');
+			$_SESSION['orgCode'] = $orgCode;
+		}
+		$pathurl = "/admin/index/get-form-json/";
 		$this->_helper->template->head('提问详情列表');
 		$hashParam = $this->getRequest()->getParam('hashParam');
 		$labels = array(
@@ -47,12 +50,11 @@ class Admin_IndexController extends Zend_Controller_Action
 	public function getFormJsonAction()
 	{
 		$pageSize = 20;
-		$orgCode = $this->getRequest()->getParam('orgCode');
 		$selector = $this->_tb->select(false)->setIntegrityCheck(false)
 							  ->from(array('a'=>'post'),array('id','username','title','isShow'))
 							  ->joinLeft(array('b'=>'post'),"a.parentId = b.parentId and a.orgCode = b.orgCode and b.lastReply != ''",array('count(b.parentId) as num'))
 							  ->where('a.sort = ?',1)
-							  ->where('a.orgCode = ?',$orgCode)
+							  ->where('a.orgCode = ?',$_SESSION['orgCode'])
 							  ->group('a.parentId')
 							  ->order('a.id desc')
 							  ->limitPage(1, $pageSize);
@@ -124,7 +126,7 @@ class Admin_IndexController extends Zend_Controller_Action
 			);
 			$where = 'id = '.$id;
 			$this->_tb->update($arrup,$where);
-			$this->_redirect('/admin/index/index/orgCode/'.$row[0]['orgCode']);
+			$this->_redirect('/admin/index/index/');
 		}
 		$this->view->row = $row;
 		$this->view->id = $id;
@@ -161,6 +163,6 @@ class Admin_IndexController extends Zend_Controller_Action
 		if(!empty($row)){
 			$this->_tb->delete($where);
 		}
-		$this->_redirect('/admin/index/index/orgCode/'.$row['orgCode']);
+		$this->_redirect('/admin/index/index/');
 	}
 }

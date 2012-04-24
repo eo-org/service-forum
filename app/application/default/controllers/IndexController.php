@@ -84,10 +84,12 @@ class IndexController extends Zend_Controller_Action
 	public function createAction()
 	{
 		$orgCode = $this->getRequest()->getParam('orgCode');
+		$http =  $_SERVER["HTTP_REFERER"];
 		if($this->getRequest()->isPost()){
 			$username = trim($this->getRequest()->getParam('username'));
 			$title = trim($this->getRequest()->getParam('title'));
 			$content = trim($this->getRequest()->getParam('content'));
+			$httpurl = $this->getRequest()->getParam('httpurl');
 			if(!empty($username) && !empty($title) && !empty($content) ){
 				$selector = $this->_tb->select(false)
 									  ->from($this->_tb,array('max(parentId) as num'))
@@ -100,19 +102,45 @@ class IndexController extends Zend_Controller_Action
 						'username' => $username,
 						'title' => $title,
 						'content' => $content,
-						'orgCode' => $orgCode
+						'orgCode' => $orgCode,
+						'httpurl' => $httpurl,
+						'md5httpurl' => md5($httpurl)
 				);
+// 				var_export($arrin);
 				$row = $this->_tb->insert($arrin);
-				$this->view->message = "留言成功！内容审核中···";
+				$this->view->message = "提问成功！内容审核中···";
 			}else{
 				$this->view->message = "名称、标题、内容不能为空！";
 			}
 		}
 		$this->view->orgCode = $orgCode;
+		$this->view->http = $http;
 // 		$row = Zend_Json::encode($row);
-		
 // 		$this->getResponse()->appendBody($callback.'('.$row.')');
 // 		$this->_helper->viewRenderer->setNoRender(true);
+		$this->_helper->layout()->disableLayout();
+	}
+	
+	public function selAction()
+	{
+		$callback = $this->getRequest()->getParam('callback');
+		$http =  $_SERVER["HTTP_REFERER"];
+		$pagesize = 20;
+		$orgCode = $this->getRequest()->getParam('orgCode');
+		$page = $this->getRequest()->getParam('page');
+		$selector = $this->_tb->select(false)
+							  ->from($this->_tb,'*')
+							  ->where('sort = ?',1)
+							  ->where('isShow =?',1)
+							  ->where('orgCode = ?',$orgCode)
+							  ->where('httpurl = ?',$http)
+							  ->order('id desc')
+							  ->limitPage($page, $pagesize);
+		$row = $this->_tb->fetchAll($selector)->toArray();
+		$val = Zend_Json::encode($row);
+		$this->getResponse()->appendBody($callback.'('.$val.')');
+		
+		$this->_helper->viewRenderer->setNoRender(true);
 		$this->_helper->layout()->disableLayout();
 	}
 }
