@@ -12,6 +12,7 @@ class IndexController extends Zend_Controller_Action
 	public function indexAction()
 	{
 		$pagesize = 10;
+		$http =  $_SERVER["HTTP_REFERER"];
 		$orgCode = $this->getRequest()->getParam('orgCode');
 		$page = $this->getRequest()->getParam('page');
 		$selector = $this->_tb->select(false)
@@ -31,6 +32,7 @@ class IndexController extends Zend_Controller_Action
 		$this->view->row = $row;
 		$num = $rowset['num'];
 		$this->view->orgCode = $orgCode;
+		$this->view->http = $http;
 		//Zend_Debug::dump($row);
 		$this->view->pageshow = $this->_pagelist->getPage($page,$num,"/default/index/index/orgCode/".$orgCode,$pagesize);
 	}
@@ -41,6 +43,8 @@ class IndexController extends Zend_Controller_Action
 		$username = $this->getRequest()->getParam('username');
 		$title = $this->getRequest()->getParam('title');
 		$content = $this->getRequest()->getParam('content');
+		$httpurl = $this->getRequest()->getParam('httpurl');
+		$datatime = date('Y-m-d H:i:s',time());
 		$selector = $this->_tb->select(false)
 							  ->from($this->_tb,array('max(parentId) as num'))
 							  ->where('sort = ?',1)
@@ -52,7 +56,10 @@ class IndexController extends Zend_Controller_Action
 				'username' => $username,
 				'title' => $title,
 				'content' => $content,
-				'orgCode' => $orgCode
+				'orgCode' => $orgCode,
+				'httpurl' => $httpurl,
+				'md5httpurl' => md5($httpurl),
+				'datatime' => $datatime
 				);
 		$row = $this->_tb->insert($arrin);
 		echo $row;
@@ -90,6 +97,7 @@ class IndexController extends Zend_Controller_Action
 			$title = trim($this->getRequest()->getParam('title'));
 			$content = trim($this->getRequest()->getParam('content'));
 			$httpurl = $this->getRequest()->getParam('httpurl');
+			$datatime = date('Y-m-d H:i:s',time());
 			if(!empty($username) && !empty($title) && !empty($content) ){
 				$selector = $this->_tb->select(false)
 									  ->from($this->_tb,array('max(parentId) as num'))
@@ -104,7 +112,8 @@ class IndexController extends Zend_Controller_Action
 						'content' => $content,
 						'orgCode' => $orgCode,
 						'httpurl' => $httpurl,
-						'md5httpurl' => md5($httpurl)
+						'md5httpurl' => md5($httpurl),
+						'datatime' => $datatime
 				);
 // 				var_export($arrin);
 				$row = $this->_tb->insert($arrin);

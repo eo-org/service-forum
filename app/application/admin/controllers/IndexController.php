@@ -97,7 +97,7 @@ class Admin_IndexController extends Zend_Controller_Action
 		$id = $this->getRequest()->getParam('id');
 		$selector = $this->_tb->select(false)->setIntegrityCheck(false)
 							  ->from(array('p'=>'post'),array('p.id','p.parentId','p.username','p.title','p.content','p.isshow','p.orgCode'))
-							  ->joinLeft(array('o'=>'post'),"p.parentId = o.parentId and p.orgCode = o.orgCode",array('o.lastReplyUsername','o.lastReply'))
+							  ->joinLeft(array('o'=>'post'),"p.parentId = o.parentId and p.orgCode = o.orgCode",array('o.id as oid','o.lastReplyUsername','o.lastReply','p.lastDatatime'))
 							  ->where('p.id = ?',$id);
 		$row = $this->_tb->fetchAll($selector)->toArray();
 		if($this->getRequest()->isPost()){
@@ -116,17 +116,21 @@ class Admin_IndexController extends Zend_Controller_Action
 						'sort' => $cou['num']+1,
 						'lastReplyUsername' => $row[0]['lastReplyUsername'],
 						'lastReply' => $row[0]['lastReply'],
-						'orgCode' => $row[0]['orgCode']
+						'orgCode' => $row[0]['orgCode'],
+						'lastDatatime' => $row[0]['lastDatatime']
 				);
 				$this->_tb->insert($arrin);
 			}
+			$datatime = date('Y-m-d H:i:s',time());
 			$arrup = array(
 					'lastReplyUsername' => $lastReplyUsername,
-					'lastReply' => $lastReply
+					'lastReply' => $lastReply,
+					'lastDatatime' => $datatime
 			);
 			$where = 'id = '.$id;
 			$this->_tb->update($arrup,$where);
 			$this->_redirect('/admin/index/index/');
+// 			var_export($arrup);
 		}
 		$this->view->row = $row;
 		$this->view->id = $id;
@@ -164,5 +168,17 @@ class Admin_IndexController extends Zend_Controller_Action
 			$this->_tb->delete($where);
 		}
 		$this->_redirect('/admin/index/index/');
+	}
+	
+	public function dellastAction()
+	{
+		$id = $this->getRequest()->getParam('id');
+		$row = $this->_tb->find($id)->current()->toArray();
+		$where = 'id = '.$id;
+		if(!empty($row)){
+			$row = $this->_tb->delete($where);
+		}
+		echo $row;
+		exit;
 	}
 }

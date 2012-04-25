@@ -15,9 +15,13 @@
 	<br>
 	<div>
 		<?php foreach ($row as $num => $arrone) {?>	
-			<div id='messagelastreply<?php echo $arrone['id'];?>' class='messagelastreply' style="border:1px solid #000;width:480px;padding:5px;">
+			<div id='messagelastreply<?php echo $arrone['oid'];?>' class='messagelastreply' style="border:1px solid #000;width:480px;padding:5px;">
 				<?php if(!isset($arrone['lastReply'])){echo "暂无回复！";break;}else{?>
-				<?php echo $arrone['lastReplyUsername'];?>答：<?php echo $arrone['lastReply'];}?>
+				<?php echo $arrone['lastReplyUsername'];?>答：<?php echo $arrone['lastReply'];?>
+					<div id='deldetail' class='<?php echo $arrone['oid'];?>' style='width:50px;text-align:center;float:right;'>
+						<a href="#">删除</a>
+					</div>
+				<?php }?>
 			</div>
 			<br>	
 		<?php }?>
@@ -54,6 +58,17 @@ $('#editdetail').live("click",function(){
 		textcontent+= "<option value='0' <?php if($row[0]['isshow']==0){echo 'selected';}?>>隐藏</option></select><br>&nbsp;&nbsp;&nbsp;&nbsp;";
 		textcontent+= "&nbsp;&nbsp;&nbsp;&nbsp;<input type='button' name='submitpost' id='submitpost' value='确定' /><input type='button' name='return' id='return' value='返回' />";
 	$('#messagecontent').html(textcontent);
+});
+$('#deldetail').live("click",function(){
+	var id = $(this).attr('class');
+	$.ajax({
+		type: "POST",
+		url: '/admin/index/dellast/id/'+id,
+		success: function(obj) {	
+			$('#messagelastreply'+id).remove();
+		}
+	});
+	return false;
 });
 $('#return').live("click",function(){
 	$.ajax({
