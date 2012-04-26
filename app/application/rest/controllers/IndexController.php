@@ -34,18 +34,10 @@ class Rest_IndexController extends Zend_Controller_Action
 	{
 		$callback = $this->getRequest()->getParam('callback');
 		$id = $this->getRequest()->getParam('id');
-		$lastshow = $this->getRequest()->getParam('lastshow');
-		if($lastshow == 1){
-			$selector = $this->_tb->select(false)
-								  ->from($this->_tb,array('lastReplyUsername','lastReply','lastdatatime'))
-								  ->where('sort != ?',1)
-								  ->where('parentId = ?',$id);
-		}else{
-			$selector = $this->_tb->select(false)
-								  ->from($this->_tb,array('lastReplyUsername','lastReply','lastdatatime'))
-								  ->where('parentId = ?',$id)
-								  ->order('lastdatatime desc');
-		}
+		$selector = $this->_tb->select(false)
+							  ->from($this->_tb,array('lastReplyUsername','lastReply','lastDatatime'))
+							  ->where('parentId = ?',$id)
+							  ->order('lastdatatime desc');
 		$row = $this->_tb->fetchAll($selector)->toArray();
 		$val = Zend_Json::encode($row);
 		$this->getResponse()->appendBody($callback.'('.$val.')');

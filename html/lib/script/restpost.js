@@ -16,7 +16,7 @@ $(document).ready(function() {
 					if(parameter[0]['lastshow'] == 1){
 						html+= "<div id='lastreply'>最新回复：";
 						if(data.lastReply){
-							html+=data.lastReplyUsername+":"+data.lastReply+"("+data.lastdatatime+")";
+							html+=data.lastReplyUsername+":"+data.lastReply+"("+data.lastDatatime+")";
 						}else{
 							html+="暂无回复";
 						}
@@ -38,16 +38,15 @@ $('#detail').live("click",function(){
 	var state = $(this).attr('state');
 	var aa = "";
 	var bb = "<a href='#'>展开</a>";
-	var parameter = eval($('#service-forum-content').attr('data'));
 	if(state == 1){
 		$.ajax({
 			dataType: "jsonp",
-			url : httpurl+"rest/index/detail/id/"+obj+"/lastshow/"+parameter[0]['lastshow'], 
+			url : httpurl+"rest/index/detail/id/"+obj, 
 			success : function(json) 
 			{
 				$.each(json, function(k, data){
 					if(data.lastReply){
-						aa+= "<div id='reply'>"+data.lastReplyUsername+":"+data.lastReply+"("+data.lastdatatime+")</div>"; 
+						aa+= "<div id='reply'>"+data.lastReplyUsername+":"+data.lastReply+"("+data.lastDatatime+")</div>"; 
 					}else{
 						aa+="暂无回复";
 					}
