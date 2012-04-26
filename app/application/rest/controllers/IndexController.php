@@ -19,7 +19,7 @@ class Rest_IndexController extends Zend_Controller_Action
 							  ->where('sort = ?',1)
 							  ->where('isShow =?',1)
 							  ->where('orgCode = ?',$orgCode)
-							  //->where('httpurl = ?',$http)
+							  ->where('httpurl = ?',$http)
 							  ->order('id desc')
 							  ->limitPage(0, $pagesize);
 		$row = $this->_tb->fetchAll($selector)->toArray();
