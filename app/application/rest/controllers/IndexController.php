@@ -43,7 +43,8 @@ class Rest_IndexController extends Zend_Controller_Action
 		}else{
 			$selector = $this->_tb->select(false)
 								  ->from($this->_tb,array('lastReplyUsername','lastReply','lastdatatime'))
-								  ->where('parentId = ?',$id);
+								  ->where('parentId = ?',$id)
+								  ->order('lastdatatime desc');
 		}
 		$row = $this->_tb->fetchAll($selector)->toArray();
 		$val = Zend_Json::encode($row);
