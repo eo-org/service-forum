@@ -5,7 +5,11 @@ $(document).ready(function() {
 	var val = obj+'/pagesize/'+parameter[0]['pagesize'];
 	$.ajax({
 		dataType: "jsonp",
+<<<<<<< HEAD
 		url : httpurl+"rest/index/index/orgCode/"+val, 
+=======
+		url : "http://forum.enorange.com/rest/index/index/orgCode/"+obj, 
+>>>>>>> c
 		success : function(json) 
 		{
 			var html = '<ul>'; 
@@ -31,6 +35,7 @@ $(document).ready(function() {
 			$('#service-forum-content').html(html);
 		}
 	});
+<<<<<<< HEAD
 }); 
 
 $('#detail').live("click",function(){
@@ -66,3 +71,6 @@ $('#detail').live("click",function(){
 	return false;
 	
 });
+=======
+});
+>>>>>>> c

@@ -147,7 +147,7 @@ class Admin_IndexController extends Zend_Controller_Action
 					'title' => $title,
 					'content' => $content,
 					'isShow' => $isshow
-					);
+				);
 			$where = 'id = '.$id;
 			$this->_tb->update($arrup,$where);
 		}
@@ -162,10 +162,10 @@ class Admin_IndexController extends Zend_Controller_Action
 	public function delAction()
 	{
 		$id = $this->getRequest()->getParam('id');
-		$row = $this->_tb->find($id)->current()->toArray();
-		$where = 'id = '.$id;
+		$row = $this->_tb->find($id)->current();
+		
 		if(!empty($row)){
-			$this->_tb->delete($where);
+			$row->delete;
 		}
 		$this->_redirect('/admin/index/index/');
 	}
