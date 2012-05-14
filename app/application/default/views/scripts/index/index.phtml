@@ -48,9 +48,10 @@ $('#add #submit').click(function(){
 	if(username && title && content){
 		$.ajax({
 			type: "POST",
-			url: '/default/index/add/orgCode/<?php echo $this->orgCode;?>/'+val,
+			//url: '/default/index/add/orgCode/<?php //echo $this->orgCode;?>/'+val,
+			url: '/default/index/add/orgCode/1/'+val,
 			success: function(obj) {	
-				window.location.href='/default/index/detail/id/'+obj;			
+				window.location.href=obj+'/default/index/detail/id/';			
 			}
 		});
 	}

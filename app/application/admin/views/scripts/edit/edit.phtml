@@ -1,0 +1,8 @@
+<?php $row = $this->row;?>
+<div id='username' class='username' style='border:1px solid #000;width:480px;padding:5px;'>
+<?php echo $row['username']."问：".$row['title'];?>
+</div>
+<div id='messagecontent' class='messagecontent' style='border-left:1px solid #000; border-right:1px solid #000;border-bottom:1px solid #000;width:480px; padding:5px;'>
+	<?php echo $row['content'];?>
+	<div id='editdetail' style='width:50px;text-align:center;float:right;'><a href='#'>修改</a></div>
+</div>

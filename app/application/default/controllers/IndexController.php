@@ -13,7 +13,7 @@ class IndexController extends Zend_Controller_Action
 	{
 		$pagesize = 10;
 		$http =  $_SERVER["HTTP_REFERER"];
-		$orgCode = $this->getRequest()->getParam('orgCode');
+		$orgCode = Class_Server::getOrgCode();
 		$page = $this->getRequest()->getParam('page');
 		$selector = $this->_tb->select(false)
 							  ->from($this->_tb,'*')
@@ -22,6 +22,7 @@ class IndexController extends Zend_Controller_Action
 							  ->where('orgCode = ?',$orgCode)
 							  ->order('id desc')
 							  ->limitPage($page, $pagesize);
+		echo $selector;exit;
 		$row = $this->_tb->fetchAll($selector)->toArray();
 		$selset = $this->_tb->select(false)
 							  ->from($this->_tb,array('count(*) as num'))
@@ -39,6 +40,7 @@ class IndexController extends Zend_Controller_Action
 	
 	public function addAction()
 	{
+		$http =  $_SERVER["HTTP_REFERER"];
 		$orgCode = $this->getRequest()->getParam('orgCode');
 		$username = $this->getRequest()->getParam('username');
 		$title = $this->getRequest()->getParam('title');
@@ -58,9 +60,10 @@ class IndexController extends Zend_Controller_Action
 				'content' => $content,
 				'orgCode' => $orgCode,
 				'httpurl' => $httpurl,
-				'md5httpurl' => md5($httpurl),
+				'md5httpurl' => $http,
 				'datatime' => $datatime
 				);
+		var_export($arrin);exit;
 		$row = $this->_tb->insert($arrin);
 		echo $row;
 		exit;
@@ -130,7 +133,7 @@ class IndexController extends Zend_Controller_Action
 		$this->_helper->layout()->disableLayout();
 	}
 	
-	public function selAction()
+	public function getAction()
 	{
 		$callback = $this->getRequest()->getParam('callback');
 		$http =  $_SERVER["HTTP_REFERER"];
@@ -142,7 +145,7 @@ class IndexController extends Zend_Controller_Action
 							  ->where('sort = ?',1)
 							  ->where('isShow =?',1)
 							  ->where('orgCode = ?',$orgCode)
-							  ->where('httpurl = ?',$http)
+							  //->where('httpurl = ?',$http)
 							  ->order('id desc')
 							  ->limitPage($page, $pagesize);
 		$row = $this->_tb->fetchAll($selector)->toArray();
