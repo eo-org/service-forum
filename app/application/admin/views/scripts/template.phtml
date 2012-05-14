@@ -1,4 +1,11 @@
 <?php
+$naviArr = array(
+	array(
+		'orgCode' => Class_Server::getOrgCode(),
+		'title' => '留言管理'
+	)
+);
+
 $request = Zend_Controller_Front::getInstance()->getRequest();
 ?>
 <?=$this->doctype() ?>
@@ -9,8 +16,40 @@ $request = Zend_Controller_Front::getInstance()->getRequest();
 </head>
 
 <body>
+	<?php echo $this->extension('Navi', $naviArr) ?>
+	
+	<div class='head-desc'>
+		<?php echo $this->head?>
+	</div>
+	
+	<?php echo $this->extension('ActionMenu', $this->actionMenu) ?>
+	
+	<div class='flash-message'>
+	<?php 
+		$messenger = new Zend_Controller_Action_Helper_FlashMessenger();
+		$messages = $messenger->getMessages();
+		if(count($messages) > 0) {
+	?>
+		<div class='brick-admin-flash-message'>
+	<?php	
+			foreach($messages as $m) {
+				echo "<div>".$m."</div>";
+			}
+	?>
+		</div>
+	<?php
+		}
+	?>
+	</div>
 	<div class='under-desc'>
 		<?=$this->layout()->content ?>
+	</div>
+	
+	<div class='footer'>
+		<hr />
+		<div class='power'>
+			powered by <a href='http://www.enorange.com'>Enorange Ltd</a>
+		</div>
 	</div>
 </body>
 </html>

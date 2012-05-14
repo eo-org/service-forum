@@ -12,7 +12,13 @@ class IndexController extends Zend_Controller_Action
 	public function indexAction()
 	{
 		$pagesize = 10;
-		$http =  $_SERVER["HTTP_REFERER"];
+		
+		if(isset($_SERVER["HTTP_REFERER"])) {
+			$http =  $_SERVER["HTTP_REFERER"];		
+		} else {
+			$http =  $_SERVER["HTTP_HOST"];
+		}
+		
 		$orgCode = $this->getRequest()->getParam('orgCode');
 		$page = $this->getRequest()->getParam('page');
 		$selector = $this->_tb->select(false)
@@ -37,6 +43,24 @@ class IndexController extends Zend_Controller_Action
 		$this->view->pageshow = $this->_pagelist->getPage($page,$num,"/default/index/index/orgCode/".$orgCode,$pagesize);
 	}
 	
+	public function createThreadAction()
+	{
+		$orgCode = Class_Server::getOrgCode();
+		$input = $this->getRequest()->getParams();
+		$datatime = date('Y-m-d H:i:s',time());
+		
+		$tb = App_Factory::_('Post');
+		$postRow = $tb->createRow();
+		$postRow->setFromArray($input);
+		
+		$postRow->md5httpurl = md5($input['httpurl']);
+		$postRow->created = $datatime;
+		$postRow->save();
+		
+		$postRow->parentId = $postRow->id;
+		$postRow->save();
+	}
+	
 	public function addAction()
 	{
 		$orgCode = $this->getRequest()->getParam('orgCode');
@@ -50,6 +74,12 @@ class IndexController extends Zend_Controller_Action
 							  ->where('sort = ?',1)
 							  ->where('orgCode = ?',$orgCode);
 		$row = $this->_tb->fetchRow($selector)->toArray();
+		
+		
+		Zend_Debug::dump($row);
+		die();
+		
+		
 		$arrin = array(
 				'parentId' => $row['num']+1,
 				'sort' => 1,
@@ -88,47 +118,47 @@ class IndexController extends Zend_Controller_Action
 		$this->view->pageshow = $this->_pagelist->getPage($page,$num,"/default/index/index/orgCode/".$row['orgCode'],$pagesize);
 	}
 	
-	public function createAction()
-	{
-		$orgCode = $this->getRequest()->getParam('orgCode');
-		$http =  $_SERVER["HTTP_REFERER"];
-		if($this->getRequest()->isPost()){
-			$username = trim($this->getRequest()->getParam('username'));
-			$title = trim($this->getRequest()->getParam('title'));
-			$content = trim($this->getRequest()->getParam('content'));
-			$httpurl = $this->getRequest()->getParam('httpurl');
-			$datatime = date('Y-m-d H:i:s',time());
-			if(!empty($username) && !empty($title) && !empty($content) ){
-				$selector = $this->_tb->select(false)
-									  ->from($this->_tb,array('max(parentId) as num'))
-									  ->where('sort = ?',1)
-									  ->where('orgCode = ?',$orgCode);
-				$row = $this->_tb->fetchRow($selector)->toArray();
-				$arrin = array(
-						'parentId' => $row['num']+1,
-						'sort' => 1,
-						'username' => $username,
-						'title' => $title,
-						'content' => $content,
-						'orgCode' => $orgCode,
-						'httpurl' => $httpurl,
-						'md5httpurl' => md5($httpurl),
-						'datatime' => $datatime
-				);
-// 				var_export($arrin);
-				$row = $this->_tb->insert($arrin);
-				$this->view->message = "提问成功！内容审核中···";
-			}else{
-				$this->view->message = "名称、标题、内容不能为空！";
-			}
-		}
-		$this->view->orgCode = $orgCode;
-		$this->view->http = $http;
-// 		$row = Zend_Json::encode($row);
-// 		$this->getResponse()->appendBody($callback.'('.$row.')');
-// 		$this->_helper->viewRenderer->setNoRender(true);
-		$this->_helper->layout()->disableLayout();
-	}
+//	public function createAction()
+//	{
+//		$orgCode = $this->getRequest()->getParam('orgCode');
+//		$http =  $_SERVER["HTTP_REFERER"];
+//		if($this->getRequest()->isPost()){
+//			$username = trim($this->getRequest()->getParam('username'));
+//			$title = trim($this->getRequest()->getParam('title'));
+//			$content = trim($this->getRequest()->getParam('content'));
+//			$httpurl = $this->getRequest()->getParam('httpurl');
+//			$datatime = date('Y-m-d H:i:s',time());
+//			if(!empty($username) && !empty($title) && !empty($content) ){
+//				$selector = $this->_tb->select(false)
+//									  ->from($this->_tb,array('max(parentId) as num'))
+//									  ->where('sort = ?',1)
+//									  ->where('orgCode = ?',$orgCode);
+//				$row = $this->_tb->fetchRow($selector)->toArray();
+//				$arrin = array(
+//						'parentId' => $row['num']+1,
+//						'sort' => 1,
+//						'username' => $username,
+//						'title' => $title,
+//						'content' => $content,
+//						'orgCode' => $orgCode,
+//						'httpurl' => $httpurl,
+//						'md5httpurl' => md5($httpurl),
+//						'datatime' => $datatime
+//				);
+//// 				var_export($arrin);
+//				$row = $this->_tb->insert($arrin);
+//				$this->view->message = "提问成功！内容审核中···";
+//			}else{
+//				$this->view->message = "名称、标题、内容不能为空！";
+//			}
+//		}
+//		$this->view->orgCode = $orgCode;
+//		$this->view->http = $http;
+//// 		$row = Zend_Json::encode($row);
+//// 		$this->getResponse()->appendBody($callback.'('.$row.')');
+//// 		$this->_helper->viewRenderer->setNoRender(true);
+//		$this->_helper->layout()->disableLayout();
+//	}
 	
 	public function selAction()
 	{

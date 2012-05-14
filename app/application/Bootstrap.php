@@ -46,6 +46,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         Zend_Layout::startMvc();
         $layout = Zend_Layout::getMvcInstance();
         $layout->setLayout('template');
+        
+        $view = Zend_Layout::getMvcInstance()->getView();
+        $view->addHelperPath(APP_PATH.'/helpers','Helper');
     }
     
 	protected function _initRouter()
