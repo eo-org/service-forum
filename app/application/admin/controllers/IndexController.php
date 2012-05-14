@@ -31,7 +31,8 @@ class Admin_IndexController extends Zend_Controller_Action
 				'click' => array(
 						'action' => 'contextMenu',
 						'menuItems' => array(
-								array('查看', '/'.$orgCode.'/admin/index/create/id/')
+								array('查看', '/'.$orgCode.'/admin/index/create/id/'),
+								array('删除', '/'.$orgCode.'/admin/index/delete/state/1/id/')
 						)
 				),
 				'initSelectRun' => 'true',
@@ -61,7 +62,7 @@ class Admin_IndexController extends Zend_Controller_Action
 									->group('orgCode');
 				$cou = $this->_tb->fetchRow($cousql)->toArray();
 				$arrin = array(
-						'parentid' => $row[0]['parentId'],
+						'parentId' => $row[0]['parentId'],
 						'sort' => $cou['num']+1,
 						'lastReplyUsername' => $row[0]['lastReplyUsername'],
 						'lastReply' => $row[0]['lastReply'],
@@ -78,7 +79,7 @@ class Admin_IndexController extends Zend_Controller_Action
 			);
 			$where = 'id = '.$id;
 			$this->_tb->update($arrup,$where);
-			$this->_helper->redirector()->gotoSimple('index');
+			$this->_helper->redirector()->gotoSimple('create');
 		}
 		
 		$this->view->row = $row;
@@ -101,9 +102,8 @@ class Admin_IndexController extends Zend_Controller_Action
 			$this->_tb->update($arrup,$where);
 		}
 		$row = $this->_tb->find($id)->current()->toArray();
-		$post = "<div id='username' class='username' style='border:1px solid #000;width:480px;padding:5px;'>".$row['username']."问：".$row['title']."</div>";
-		$post.= "<div id='messagecontent' class='messagecontent' style='border-left:1px solid #000; border-right:1px solid #000;border-bottom:1px solid #000;width:480px; padding:5px;'>";
-		$post.= $row['content']."<div id='editdetail' style='width:50px;text-align:center;float:right;'><a href='#'>修改</a></div></div>";
+		$this->view->row= $row;
+		$post = $this->view->render('edit/edit.phtml');
 		echo $post;
 		exit;
 	}
@@ -142,7 +142,6 @@ class Admin_IndexController extends Zend_Controller_Action
 		}
 		$rowset = $this->_tb->fetchAll($selector)->toArray();
 		$result['data'] = $rowset;
-		//$result['dataSize'] = App_Func::count($selector);
 		$result['pageSize'] = $pageSize;
 	
 		if(empty($result['currentPage'])) {
@@ -151,26 +150,38 @@ class Admin_IndexController extends Zend_Controller_Action
 		return $this->_helper->json($result);
 	}
 	
-	public function delAction()
+	public function deleteAction()
 	{
 		$id = $this->getRequest()->getParam('id');
-		$row = $this->_tb->find($id)->current();
-		
-		if(!empty($row)){
-			$row->delete;
-		}
-		$this->_redirect('/admin/index/index/');
-	}
-	
-	public function dellastAction()
-	{
-		$id = $this->getRequest()->getParam('id');
-		$row = $this->_tb->find($id)->current()->toArray();
-		$where = 'id = '.$id;
-		if(!empty($row)){
+		$state = $this->getRequest()->getParam('state');
+		if($state == 1){
+			$row = $this->_tb->find($id)->current();
+			if(!empty($row)){
+				$where = 'parentId = '.$row['parentId'];
+				$row = $this->_tb->delete($where);
+			}
+			$this->_redirect('/'.Class_Server::getOrgCode().'/admin/index/index/');
+		} else {
+			$row = $this->_tb->find($id)->current()->toArray();
+			$where = 'id = '.$id;
+			if(!empty($row['title'])){
+				$selector = $this->_tb->select(false)
+									  ->from($this->_tb,array('id','lastReplyUsername','lastReply','lastDatatime'))
+									  ->where('parentId = ?',$row['parentId'])
+									  ->order('sort Desc')
+									  ->limit(1);
+				$arrone = $this->_tb->fetchRow($selector)->toArray();
+				$arrup = array(
+						'lastReplyUsername' => $arrone['lastReplyUsername'],
+						'lastReply' => $arrone['lastReply'],
+						'lastDatatime' => $arrone['lastDatatime']
+						);
+				$this->_tb->update($arrup,$where);
+				$where = 'id = '.$arrone['id'];
+			}
 			$row = $this->_tb->delete($where);
-		}
-		echo $row;
-		exit;
+			echo $row;
+			exit;
+		}	
 	}
 }

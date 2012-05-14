@@ -11,9 +11,8 @@ class Rest_IndexController extends Zend_Controller_Action
 	{
 		$callback = $this->getRequest()->getParam('callback');	
 		$http =  $_SERVER["HTTP_REFERER"];
-// 		$pagesize = 20;
-		$orgCode = $this->getRequest()->getParam('orgCode');
-		$pagesize = $this->getRequest()->getParam('pagesize');
+		$pagesize = 20;
+		$orgCode = Class_Server::getOrgCode();
 		$selector = $this->_tb->select(false)
 							  ->from($this->_tb,'*')
 							  ->where('sort = ?',1)
@@ -30,18 +29,4 @@ class Rest_IndexController extends Zend_Controller_Action
 		$this->_helper->layout()->disableLayout();
 	}
 	
-	public function detailAction()
-	{
-		$callback = $this->getRequest()->getParam('callback');
-		$id = $this->getRequest()->getParam('id');
-		$selector = $this->_tb->select(false)
-							  ->from($this->_tb,array('lastReplyUsername','lastReply','lastDatatime'))
-							  ->where('parentId = ?',$id)
-							  ->order('lastdatatime desc');
-		$row = $this->_tb->fetchAll($selector)->toArray();
-		$val = Zend_Json::encode($row);
-		$this->getResponse()->appendBody($callback.'('.$val.')');
-		$this->_helper->viewRenderer->setNoRender(true);
-		$this->_helper->layout()->disableLayout();
-	}
 }

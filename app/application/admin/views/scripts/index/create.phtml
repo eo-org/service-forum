@@ -7,9 +7,8 @@
 		</div>
 		<div id='messagecontent' class='messagecontent' style='border-left:1px solid #000; border-right:1px solid #000;border-bottom:1px solid #000;width:480px; padding:5px;'>
 			<?php echo $row[0]['content'];?>
-			<div id='editdetail' style='width:50px;text-align:center;float:right;'>
-					<a href="#">修改</a>
-			</div>
+			<div id='editdetail' class='<?php echo $row[0]['id'];?>' style='width:50px;text-align:center;float:right;'>
+					<a href="#">修改</a></div>
 		</div>
 	</div>
 	<br>
@@ -17,8 +16,8 @@
 		<?php foreach ($row as $num => $arrone) {?>	
 			<div id='messagelastreply<?php echo $arrone['oid'];?>' class='messagelastreply' style="border:1px solid #000;width:480px;padding:5px;">
 				<?php if(!isset($arrone['lastReply'])){echo "暂无回复！";break;}else{?>
-				<?php echo $arrone['lastReplyUsername'];?>答：<?php echo $arrone['lastReply'];?>
-					<div id='deldetail' class='<?php echo $arrone['oid'];?>' style='width:50px;text-align:center;float:right;'>
+				<?php echo $arrone['lastReplyUsername'];?>回复：<?php echo $arrone['lastReply'];?>
+					<div id='deldetail' class='<?php echo $arrone['oid'];?>' state='2' style='width:50px;text-align:center;float:right;'>
 						<a href="#">删除</a>
 					</div>
 				<?php }?>
@@ -29,7 +28,7 @@
 	</div>
 </div>
 <br>
-<form method="post">
+<form method="post" action='/<?php echo Class_Server::getOrgCode()?>/admin/index/create/id/<?php echo $this->id;?>'>
 	<table width="95%" border="0" align="center" cellpadding="0" cellspacing="0" style="font-size:16px;">
 	  <tr>
 	    <td height="35" colspan="2" align="center">我的回复</td>
@@ -45,7 +44,7 @@
 	    </tr>
 	  <tr>
 	    <td height="35" colspan="2" align="center" style="vertical-align:middle;"><input type="submit" name="button" id="button" value="提交" />
-	      <input type="button" name="button2" id="button2" value="返回" onclick="location.href='http://forum.eo.test/admin/index/index/'" /></td>
+	      <input type="button" name="button2" id="button2" value="返回" onclick="location.href='/<?php echo Class_Server::getOrgCode()?>/admin/index/index/'" /></td>
 	  </tr>
 	</table>
 </form>
@@ -61,9 +60,10 @@ $('#editdetail').live("click",function(){
 });
 $('#deldetail').live("click",function(){
 	var id = $(this).attr('class');
+	var state = $(this).attr('state');
 	$.ajax({
 		type: "POST",
-		url: '/admin/index/dellast/id/'+id,
+		url: '/<?php echo Class_Server::getOrgCode()?>/admin/index/delete/id/'+id+'/state/'+state,
 		success: function(obj) {	
 			$('#messagelastreply'+id).remove();
 		}
@@ -73,7 +73,7 @@ $('#deldetail').live("click",function(){
 $('#return').live("click",function(){
 	$.ajax({
 		type: "POST",
-		url: '/admin/index/edit/id/<?php echo $this->id;?>',
+		url: '/<?php echo Class_Server::getOrgCode()?>/admin/index/edit/id/<?php echo $this->id;?>',
 		success: function(obj) {	
 			$('#message').html(obj);
 		}
@@ -88,7 +88,7 @@ $('#submitpost').live("click",function(){
 	if( title && content){
 		$.ajax({
 			type: "POST",
-			url: '/admin/index/edit/id/<?php echo $this->id;?>'+val,
+			url: '/<?php echo Class_Server::getOrgCode()?>/admin/index/edit/id/<?php echo $this->id;?>'+val,
 			success: function(obj) {	
 				$('#message').html(obj);			
 			}

@@ -3,7 +3,7 @@
 	//console.log('run');
 	$.ajax({
 		dataType: "jsonp",
-		url : "http://forum.eo.test/rest/index/index/orgCode/"+obj, 
+		url : "http://forum.eo.test/"+obj+"/rest/index/index/", 
 		success : function(json) 
 		{
 			var html = '<ul>'; 
