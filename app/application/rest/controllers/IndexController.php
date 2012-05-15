@@ -10,7 +10,7 @@ class Rest_IndexController extends Zend_Controller_Action
 	public function indexAction()
 	{
 		$callback = $this->getRequest()->getParam('callback');	
-		$http =  $_SERVER["HTTP_REFERER"];
+		$http =  md5($_SERVER["HTTP_REFERER"]);
 		$pagesize = 20;
 		$orgCode = Class_Server::getOrgCode();
 		$selector = $this->_tb->select(false)
@@ -18,7 +18,7 @@ class Rest_IndexController extends Zend_Controller_Action
 							  ->where('sort = ?',1)
 							  ->where('isShow =?',1)
 							  ->where('orgCode = ?',$orgCode)
-							  ->where('httpurl = ?',$http)
+							  ->where('md5httpurl = ?',$http)
 							  ->order('id desc')
 							  ->limitPage(0, $pagesize);
 		$row = $this->_tb->fetchAll($selector)->toArray();
