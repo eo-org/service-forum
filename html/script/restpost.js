@@ -1,9 +1,11 @@
-﻿$(document).ready(function() { 
+﻿//var httpurl = "http://forum.eo.test/" ;
+var httpurl = "http://forum.enorange.com/" ;
+$(document).ready(function() { 
 	var obj = $('#service-forum-content').attr('org-code');
 	//console.log('run');
 	$.ajax({
 		dataType: "jsonp",
-		url : "http://forum.eo.test/"+obj+"/rest/index/index/", 
+		url : httpurl+obj+"/rest/index/index/", 
 		success : function(json) 
 		{
 			var html = '<ul>'; 
