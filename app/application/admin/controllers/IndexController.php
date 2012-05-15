@@ -8,7 +8,6 @@ class Admin_IndexController extends Zend_Controller_Action
 	public function indexAction()
 	{
 		$orgCode = Class_Server::getOrgCode();
-		
 		$hashParam = $this->getRequest()->getParam('hashParam');
 		$labels = array(
 				'username' => '提问人',
@@ -45,45 +44,53 @@ class Admin_IndexController extends Zend_Controller_Action
 	public function createAction()
 	{
 		$id = $this->getRequest()->getParam('id');
+		$orgCode = Class_Server::getOrgCode();
 		$selector = $this->_tb->select(false)->setIntegrityCheck(false)
 							  ->from(array('p'=>'post'),array('p.id','p.parentId','p.username','p.title','p.content','p.isshow','p.orgCode'))
 							  ->joinLeft(array('o'=>'post'),"p.parentId = o.parentId and p.orgCode = o.orgCode",array('o.id as oid','o.lastReplyUsername','o.lastReply','p.lastDatatime'))
-							  ->where('p.id = ?',$id);
+							  ->where('p.id = ?',$id)
+							  ->where('p.orgCode = ?',$orgCode);
 		$row = $this->_tb->fetchAll($selector)->toArray();
-		if($this->getRequest()->isPost()){
-			$lastReplyUsername = $this->getRequest()->getParam('lastReplyUsername');
-			$lastReply = $this->getRequest()->getParam('lastReply');
-			if(!empty($row[0]['lastReply'])){
-				$cousql = $this->_tb->select(false)
-									->from($this->_tb,array('count(*) as num'))
-									->where('parentId = ?',$row[0]['parentId'])
-									->where('orgCode = ?',$row[0]['orgCode'])
-									->group('parentId')
-									->group('orgCode');
-				$cou = $this->_tb->fetchRow($cousql)->toArray();
-				$arrin = array(
-						'parentId' => $row[0]['parentId'],
-						'sort' => $cou['num']+1,
-						'lastReplyUsername' => $row[0]['lastReplyUsername'],
-						'lastReply' => $row[0]['lastReply'],
-						'orgCode' => $row[0]['orgCode'],
-						'lastDatatime' => $row[0]['lastDatatime']
+		if(!empty($row)){
+			$csa = Class_Session_User::getInstance();
+			$lastReplyUsername = $csa->getUserData('loginName');
+			if($this->getRequest()->isPost()){
+				//$lastReplyUsername = $this->getRequest()->getParam('lastReplyUsername');
+				$lastReply = $this->getRequest()->getParam('lastReply');
+				if(!empty($row[0]['lastReply'])){
+					$cousql = $this->_tb->select(false)
+										->from($this->_tb,array('count(*) as num'))
+										->where('parentId = ?',$row[0]['parentId'])
+										->where('orgCode = ?',$row[0]['orgCode'])
+										->group('parentId')
+										->group('orgCode');
+					$cou = $this->_tb->fetchRow($cousql)->toArray();
+					$arrin = array(
+							'parentId' => $row[0]['parentId'],
+							'sort' => $cou['num']+1,
+							'lastReplyUsername' => $row[0]['lastReplyUsername'],
+							'lastReply' => $row[0]['lastReply'],
+							'orgCode' => $row[0]['orgCode'],
+							'lastDatatime' => $row[0]['lastDatatime']
+					);
+					$this->_tb->insert($arrin);
+				}
+				$datatime = date('Y-m-d H:i:s',time());
+				$arrup = array(
+						'lastReplyUsername' => $lastReplyUsername,
+						'lastReply' => $lastReply,
+						'lastDatatime' => $datatime
 				);
-				$this->_tb->insert($arrin);
+				$where = 'id = '.$id;
+				$this->_tb->update($arrup,$where);
+				$this->_helper->redirector()->gotoSimple('create');
 			}
-			$datatime = date('Y-m-d H:i:s',time());
-			$arrup = array(
-					'lastReplyUsername' => $lastReplyUsername,
-					'lastReply' => $lastReply,
-					'lastDatatime' => $datatime
-			);
-			$where = 'id = '.$id;
-			$this->_tb->update($arrup,$where);
-			$this->_helper->redirector()->gotoSimple('create');
+			$this->view->lastReplyUsername = $lastReplyUsername;
+			$this->view->row = $row;
+			$this->view->id = $id;
+		} else {
+			$this->view->state = 1;
 		}
-		
-		$this->view->row = $row;
-		$this->view->id = $id;
 	}
 		
 	public function editAction()
