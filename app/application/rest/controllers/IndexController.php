@@ -21,6 +21,7 @@ class Rest_IndexController extends Zend_Controller_Action
 							  ->where('md5httpurl = ?',$http)
 							  ->order('id desc')
 							  ->limitPage(0, $pagesize);
+		echo $selector;exit;
 		$row = $this->_tb->fetchAll($selector)->toArray();
 		$val = Zend_Json::encode($row);
 		$this->getResponse()->appendBody($callback.'('.$val.')');
