@@ -1,5 +1,5 @@
 ﻿//var httpurl = "http://forum.eo.test/" ;
-var httpurl = "http://forum.enorange.com/" ;
+var httpurl = "http://forum.enorange.cn/" ;
 $(document).ready(function() { 
 	var obj = $('#service-forum-content').attr('org-code');
 	//console.log('run');
