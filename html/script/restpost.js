@@ -1,11 +1,12 @@
-﻿//var httpurl = "http://forum.eo.test/" ;
-var httpurl = "http://forum.enorange.cn/" ;
+﻿var httpurl = "http://forum.eo.test/" ;
+//var httpurl = "http://forum.enorange.cn/" ;
+
 $(document).ready(function() { 
 	var obj = $('#service-forum-content').attr('org-code');
 	//console.log('run');
 	$.ajax({
 		dataType: "jsonp",
-		url : httpurl+obj+"/rest/index/index/", 
+		url : httpurl+obj+"/default/read/reply/", 
 		success : function(json) 
 		{
 			var html = '<ul>'; 

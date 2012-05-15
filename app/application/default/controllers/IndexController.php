@@ -12,12 +12,12 @@ class IndexController extends Zend_Controller_Action
 	public function indexAction()
 	{
 		$pagesize = 10;
-		
 		if(isset($_SERVER["HTTP_REFERER"])) {
 			$http =  $_SERVER["HTTP_REFERER"];		
 		} else {
 			$http =  $_SERVER["HTTP_HOST"];
 		}
+		$http = parse_url($http,PHP_URL_PATH).parse_url($http,PHP_URL_QUERY).parse_url($http,PHP_URL_FRAGMENT);
 		$state = $this->getRequest()->getParam('state');
 		if($state == 1){
 			$this->view->message = "提问成功！内容审核中···";
