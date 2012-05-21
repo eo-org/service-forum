@@ -18,33 +18,27 @@ class IndexController extends Zend_Controller_Action
 			$http =  $_SERVER["HTTP_HOST"];
 		}
 		$http = parse_url($http,PHP_URL_PATH).parse_url($http,PHP_URL_QUERY).parse_url($http,PHP_URL_FRAGMENT);
-		$state = $this->getRequest()->getParam('state');
-		if($state == 1){
-			$this->view->message = "提问成功！内容审核中···";
-		} else if($state == 2) {
-			$this->view->message = "名称、标题、内容不能为空！";
-		}
 		$orgCode = Class_Server::getOrgCode();
-		$page = $this->getRequest()->getParam('page');
-		$selector = $this->_tb->select(false)
-							  ->from($this->_tb,'*')
-							  ->where('sort = ?',1)
-							  ->where('isShow =?',1)
-							  ->where('orgCode = ?',$orgCode)
-							  ->order('id desc')
-							  ->limitPage($page, $pagesize);
-		$row = $this->_tb->fetchAll($selector)->toArray();
-		$selset = $this->_tb->select(false)
-							  ->from($this->_tb,array('count(*) as num'))
-							  ->where('sort = ?',1)
-							  ->where('isShow =?',1)
-							  ->where('orgCode = ?',$orgCode);
-		$rowset = $this->_tb->fetchRow($selset)->toArray();
-		$this->view->row = $row;
-		$num = $rowset['num'];
-		$this->view->orgCode = $orgCode;
-		$this->view->http = $http;
-		$this->view->pageshow = $this->_pagelist->getPage($page,$num,"/default/index/index/orgCode/".$orgCode,$pagesize);
+		if($this->getRequest()->isPost()){
+			$input = $this->getRequest()->getParams();
+			if(!empty($input['username']) && !empty($input['title']) && !empty($input['content'])){
+				$datatime = date('Y-m-d H:i:s',time());
+				$tb = App_Factory::_('Post');
+				$postRow = $tb->createRow();
+				$postRow->setFromArray($input);
+					
+				$postRow->md5httpurl = md5($input['httpurl']);
+				$postRow->datatime = $datatime;
+				$postRow->sort = 1;
+				$postRow->save();
+					
+				$postRow->parentId = $postRow->id;
+				$postRow->save();
+				$this->view->message = "提问成功！内容审核中···";
+			} else {
+				$this->view->message = "名称、标题、内容不能为空！";
+			}
+		}
 	}
 	
 	public function createThreadAction()
@@ -68,7 +62,7 @@ class IndexController extends Zend_Controller_Action
 		} else {
 			$state = 2;
 		}
-		$this->_forward('index','index','default',array('state'=>$state));
+		//$this->_forward('index','index','default',array('state'=>$state));
 	}
 	
 	public function addAction()

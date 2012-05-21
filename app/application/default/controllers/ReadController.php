@@ -18,8 +18,9 @@ class ReadController extends Zend_Controller_Action
 		}
 		$http = parse_url($http,PHP_URL_PATH).parse_url($http,PHP_URL_QUERY).parse_url($http,PHP_URL_FRAGMENT);
 		$http = md5($http);
-		$pagesize = 20;
-		$orgCode = Class_Server::getOrgCode();
+		$page = 1;
+		$pagesize = 10;
+		$orgCode = Class_Server::getOrgCode();		
 		$selector = $this->_tb->select(false)
 							  ->from($this->_tb,'*')
 							  ->where('sort = ?',1)
@@ -27,7 +28,7 @@ class ReadController extends Zend_Controller_Action
 							  ->where('orgCode = ?',$orgCode)
 							  ->where('md5httpurl = ?',$http)
 							  ->order('id desc')
-							  ->limitPage(0, $pagesize);
+							  ->limitPage($page, $pagesize);
 		$row = $this->_tb->fetchAll($selector)->toArray();
 		$val = Zend_Json::encode($row);
 		$this->getResponse()->appendBody($callback.'('.$val.')');
@@ -36,26 +37,6 @@ class ReadController extends Zend_Controller_Action
 		$this->_helper->layout()->disableLayout();
 	}
 	
-	public function readReplyJosnAction()
-	{
-		$callback = $this->getRequest()->getParam('callback');	
-		$http =  md5($_SERVER["HTTP_REFERER"]);
-		$pagesize = 20;
-		$orgCode = Class_Server::getOrgCode();
-		$selector = $this->_tb->select(false)
-							  ->from($this->_tb,'*')
-							  ->where('sort = ?',1)
-							  ->where('isShow =?',1)
-							  ->where('orgCode = ?',$orgCode)
-							  ->where('md5httpurl = ?',$http)
-							  ->order('id desc')
-							  ->limitPage(0, $pagesize);
-		$row = $this->_tb->fetchAll($selector)->toArray();
-		$val = Zend_Json::encode($row);
-		$this->getResponse()->appendBody($callback.'('.$val.')');
-		
-		$this->_helper->viewRenderer->setNoRender(true);
-		$this->_helper->layout()->disableLayout();
-	}
+
 	
 }

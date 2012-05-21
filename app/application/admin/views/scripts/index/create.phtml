@@ -1,23 +1,23 @@
 <?php if($this->state == 1){ ?>
 	<div>对不起，您没有权限观看该页面！<a href='/<?php echo Class_Server::getOrgCode()?>/admin/index/'>返回</a></div>
 <?php } else { ?>
-<div id='messagedetail' class='messagedetail' style='font-size:16px;width:500px;margin:0 auto;'>
+<div id='messagedetail' class='messagedetail' style='font-size:16px;width:800px;margin:0 auto;'>
 	<?php $row = $this->row;?>
 	<br>
-	<div id='message' class='message' style="width:500px;">
-		<div id='username' class='username' style="border:1px solid #000;width:480px;padding:5px;">
-			<?php echo $row[0]['username'];?>问：<?php echo $row[0]['title'];?>
+	<div id='message' class='message' style="width:800px;">
+		<div id='username' class='username' style="border:1px solid #000;width:780px;padding:5px;">
+			<?php echo $row[0]['username'];?>问：<?php echo $row[0]['title'];?><div id='state' style='width:150px;text-align:center;float:right;'>[状态：<?php echo $row[0]['state'];?>]</div>
 		</div>
-		<div id='messagecontent' class='messagecontent' style='border-left:1px solid #000; border-right:1px solid #000;border-bottom:1px solid #000;width:480px; padding:5px;'>
+		<div id='messagecontent' class='messagecontent' style='border-left:1px solid #000; border-right:1px solid #000;border-bottom:1px solid #000;width:780px; padding:5px;'>
 			<?php echo $row[0]['content'];?>
 			<div id='editdetail' class='<?php echo $row[0]['id'];?>' style='width:50px;text-align:center;float:right;'>
 					<a href="#">修改</a></div>
 		</div>
 	</div>
 	<br>
-	<div>
+	<div style="width:800px;">
 		<?php foreach ($row as $num => $arrone) {?>	
-			<div id='messagelastreply<?php echo $arrone['oid'];?>' class='messagelastreply' style="border:1px solid #000;width:480px;padding:5px;">
+			<div id='messagelastreply<?php echo $arrone['oid'];?>' class='messagelastreply' style="border:1px solid #000;width:780px;padding:5px;">
 				<?php if(!isset($arrone['lastReply'])){echo "暂无回复！";break;}else{?>
 				<?php echo $arrone['lastReplyUsername'];?>回复：<?php echo $arrone['lastReply'];?>
 					<div id='deldetail' class='<?php echo $arrone['oid'];?>' state='2' style='width:50px;text-align:center;float:right;'>
@@ -31,7 +31,7 @@
 	</div>
 </div>
 <br>
-<form method="post" action='/<?php echo Class_Server::getOrgCode()?>/admin/index/create/id/<?php echo $this->id;?>'>
+<form method="post" action='/<?php echo Class_Server::getOrgCode()?>/admin/index/create/id/<?php echo $this->id;?>' style="width:800px;">
 	<table width="95%" border="0" align="center" cellpadding="0" cellspacing="0" style="font-size:16px;">
 	  <tr>
 	    <td height="35" colspan="2" align="center">我的回复</td>
@@ -55,8 +55,9 @@
 <script type="text/javascript">
 $('#editdetail').live("click",function(){
 	var inputtitle = "<?php echo $row[0]['username'];?>问：<input type='text' name='title' id='title' size='50' value='<?php echo $row[0]['title'];?>' />";
+	inputtitle+= "<div id='state' style='width:150px;text-align:center;float:right;'>状态：<select name='state' id='state'><option>未处理</option><option>已处理</option><option>忽视</option></select></div>";
 	$('#username').html(inputtitle);
-	var textcontent = "<textarea name='content' id='content' cols='40' rows='3'><?php echo $row[0]['content'];?></textarea>";
+	var textcontent = "<textarea name='content' id='content' cols='80' rows='3'><?php echo $row[0]['content'];?></textarea>";
 		textcontent+= "<br><select name='isshow' id='isshow'><option value='1' <?php if($row[0]['isshow']==1){echo 'selected';}?>>显示</option>";
 		textcontent+= "<option value='0' <?php if($row[0]['isshow']==0){echo 'selected';}?>>隐藏</option></select><br>&nbsp;&nbsp;&nbsp;&nbsp;";
 		textcontent+= "&nbsp;&nbsp;&nbsp;&nbsp;<input type='button' name='submitpost' id='submitpost' value='确定' /><input type='button' name='return' id='return' value='返回' />";
@@ -88,11 +89,13 @@ $('#submitpost').live("click",function(){
 	var title = $('#username #title').val();
 	var content = $('#messagecontent #content').val();
 	var isshow = $('#messagecontent #isshow').val();
-	var val = '/title/'+title+'/content/'+content+'/isshow/'+isshow;
+	var state = $("#state").find("option:selected").text();
+	//var val = '/title/'+title+'/content/'+content+'/isshow/'+isshow;
 	if( title && content){
 		$.ajax({
 			type: "POST",
-			url: '/<?php echo Class_Server::getOrgCode()?>/admin/index/edit/id/<?php echo $this->id;?>'+val,
+			url: '/<?php echo Class_Server::getOrgCode()?>/admin/index/edit/id/<?php echo $this->id;?>',
+			data: "title="+title+"&content="+content+"&isshow="+isshow+'&state='+state,
 			success: function(obj) {	
 				$('#message').html(obj);			
 			}
