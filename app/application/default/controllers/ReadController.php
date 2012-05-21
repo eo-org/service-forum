@@ -26,7 +26,7 @@ class ReadController extends Zend_Controller_Action
 							  ->where('sort = ?',1)
 							  ->where('isShow =?',1)
 							  ->where('orgCode = ?',$orgCode)
-							  //->where('md5httpurl = ?',$http)
+							  ->where('md5httpurl = ?',$http)
 							  ->order('id desc')
 							  ->limitPage($page, $pagesize);
 		$row = $this->_tb->fetchAll($selector)->toArray();

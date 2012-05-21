@@ -18,6 +18,7 @@ class IndexController extends Zend_Controller_Action
 			$http =  $_SERVER["HTTP_HOST"];
 		}
 		$http = parse_url($http,PHP_URL_PATH).parse_url($http,PHP_URL_QUERY).parse_url($http,PHP_URL_FRAGMENT);
+		$this->view->http = $http;
 		$orgCode = Class_Server::getOrgCode();
 		if($this->getRequest()->isPost()){
 			$input = $this->getRequest()->getParams();
