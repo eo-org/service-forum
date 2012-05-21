@@ -1,5 +1,5 @@
 <form method="post" action="/<?php echo Class_Server::getOrgCode()?>/default/index/index">
-	<table width="650px" border="0" cellpadding="0" cellspacing="0">
+	<table width="550px" border="0" cellpadding="0" cellspacing="0">
 	  <tr>
 	    <td height="35" colspan="2" align="center">我要提问<div style="font-size:12px;color:#f00;"><?php echo $this->message;?></div></td>
 	  </tr>
@@ -17,7 +17,7 @@
 	  </tr>
 	  <tr>
 	    <td height="35" colspan="2" align="center" style="vertical-align:middle;">
-	    	<input type='hidden' name='httpurl' value='<?php echo $this->http?>' />
+	    	<input type='hidden' name='httpurl' id='httpurl' value='<?php echo $this->http?>' />
 	    	<input type="submit" name="submit" value="提交" />
 	    </td>
 	  </tr>
