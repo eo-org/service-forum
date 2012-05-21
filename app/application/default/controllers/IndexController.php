@@ -11,7 +11,6 @@ class IndexController extends Zend_Controller_Action
 	}
 	public function indexAction()
 	{
-		$pagesize = 10;
 		if(isset($_SERVER["HTTP_REFERER"])) {
 			$http =  $_SERVER["HTTP_REFERER"];		
 		} else {
@@ -21,6 +20,11 @@ class IndexController extends Zend_Controller_Action
 		$this->view->http = $http;
 		$orgCode = Class_Server::getOrgCode();
 		if($this->getRequest()->isPost()){
+			//$checkcode = $this->_getParam("checkcode");
+			if(strtolower(trim($checkcode)) != strtolower($_SESSION['randcode']))
+			{
+				
+			}
 			$input = $this->getRequest()->getParams();
 			if(!empty($input['username']) && !empty($input['title']) && !empty($input['content'])){
 				$datatime = date('Y-m-d H:i:s',time());
@@ -144,5 +148,11 @@ class IndexController extends Zend_Controller_Action
 		
 		$this->_helper->viewRenderer->setNoRender(true);
 		$this->_helper->layout()->disableLayout();
+	}
+	public function checkcodeindexAction()
+	{
+	}
+	public function captchaAction()
+	{
 	}
 }
