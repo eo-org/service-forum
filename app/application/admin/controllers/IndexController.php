@@ -14,7 +14,7 @@ class Admin_IndexController extends Zend_Controller_Action
 				'title' => '标题',
 				'content' => '内容',
 				'isShow' => '是否显示',
-				'state' => '状态',
+				'status' => '状态',
 				'~contextMenu' => '操作'
 		);
 		$partialHTML = $this->view->partial('select-search-header-front.phtml', array(
@@ -48,7 +48,7 @@ class Admin_IndexController extends Zend_Controller_Action
 		$id = $this->getRequest()->getParam('id');
 		$orgCode = Class_Server::getOrgCode();
 		$selector = $this->_tb->select(false)->setIntegrityCheck(false)
-							  ->from(array('p'=>'post'),array('p.id','p.parentId','p.username','p.title','p.content','p.isshow','p.orgCode','p.state'))
+							  ->from(array('p'=>'post'),array('p.id','p.parentId','p.username','p.title','p.content','p.isshow','p.orgCode','p.status'))
 							  ->joinLeft(array('o'=>'post'),"p.parentId = o.parentId and p.orgCode = o.orgCode and o.sort != 1",array('o.id as oid','o.lastReplyUsername','o.lastReply','p.lastDatatime'))
 							  ->where('p.id = ?',$id)
 							  ->where('p.orgCode = ?',$orgCode);
@@ -98,13 +98,13 @@ class Admin_IndexController extends Zend_Controller_Action
 		$title = $this->getRequest()->getParam('title');
 		$content = $this->getRequest()->getParam('content');
 		$isshow = $this->getRequest()->getParam('isshow');
-		$state = $this->getRequest()->getParam('state');
+		$status = $this->getRequest()->getParam('status');
 		if(!empty($title)){
 			$arrup = array(
 					'title' => $title,
 					'content' => $content,
 					'isShow' => $isshow,
-					'state' => $state
+					'status' => $status
 				);
 			$where = 'id = '.$id;
 			$this->_tb->update($arrup,$where);

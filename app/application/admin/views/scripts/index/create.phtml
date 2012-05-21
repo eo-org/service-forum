@@ -6,7 +6,7 @@
 	<br>
 	<div id='message' class='message' style="width:800px;">
 		<div id='username' class='username' style="border:1px solid #000;width:780px;padding:5px;">
-			<?php echo $row[0]['username'];?>问：<?php echo $row[0]['title'];?><div id='state' style='width:150px;text-align:center;float:right;'>[状态：<?php echo $row[0]['state'];?>]</div>
+			<?php echo $row[0]['username'];?>问：<?php echo $row[0]['title'];?><div id='status' style='width:150px;text-align:center;float:right;'>[状态：<?php echo $row[0]['status'];?>]</div>
 		</div>
 		<div id='messagecontent' class='messagecontent' style='border-left:1px solid #000; border-right:1px solid #000;border-bottom:1px solid #000;width:780px; padding:5px;'>
 			<?php echo $row[0]['content'];?>
@@ -55,7 +55,7 @@
 <script type="text/javascript">
 $('#editdetail').live("click",function(){
 	var inputtitle = "<?php echo $row[0]['username'];?>问：<input type='text' name='title' id='title' size='50' value='<?php echo $row[0]['title'];?>' />";
-	inputtitle+= "<div id='state' style='width:150px;text-align:center;float:right;'>状态：<select name='state' id='state'><option>未处理</option><option>已处理</option><option>忽视</option></select></div>";
+	inputtitle+= "<div id='status' style='width:150px;text-align:center;float:right;'>状态：<select name='selstatus' id='selstatus'><option>未处理</option><option>已处理</option><option>忽视</option></select></div>";
 	$('#username').html(inputtitle);
 	var textcontent = "<textarea name='content' id='content' cols='80' rows='3'><?php echo $row[0]['content'];?></textarea>";
 		textcontent+= "<br><select name='isshow' id='isshow'><option value='1' <?php if($row[0]['isshow']==1){echo 'selected';}?>>显示</option>";
@@ -89,13 +89,13 @@ $('#submitpost').live("click",function(){
 	var title = $('#username #title').val();
 	var content = $('#messagecontent #content').val();
 	var isshow = $('#messagecontent #isshow').val();
-	var state = $("#state").find("option:selected").text();
+	var status = $("#selstatus").find("option:selected").text();
 	//var val = '/title/'+title+'/content/'+content+'/isshow/'+isshow;
 	if( title && content){
 		$.ajax({
 			type: "POST",
 			url: '/<?php echo Class_Server::getOrgCode()?>/admin/index/edit/id/<?php echo $this->id;?>',
-			data: "title="+title+"&content="+content+"&isshow="+isshow+'&state='+state,
+			data: "title="+title+"&content="+content+"&isshow="+isshow+'&status='+status,
 			success: function(obj) {	
 				$('#message').html(obj);			
 			}
