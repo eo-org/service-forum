@@ -20,18 +20,13 @@ class IndexController extends Zend_Controller_Action
 		$this->view->http = $http;
 		$orgCode = Class_Server::getOrgCode();
 		if($this->getRequest()->isPost()){
-			//$checkcode = $this->_getParam("checkcode");
-			if(strtolower(trim($checkcode)) != strtolower($_SESSION['randcode']))
-			{
-				
-			}
 			$input = $this->getRequest()->getParams();
 			if(!empty($input['username']) && !empty($input['title']) && !empty($input['content'])){
 				$datatime = date('Y-m-d H:i:s',time());
 				$tb = App_Factory::_('Post');
 				$postRow = $tb->createRow();
 				$postRow->setFromArray($input);
-					
+				$http = $input['httpurl'];
 				$postRow->md5httpurl = md5($input['httpurl']);
 				$postRow->datatime = $datatime;
 				$postRow->sort = 1;
@@ -44,6 +39,7 @@ class IndexController extends Zend_Controller_Action
 				$this->view->message = "名称、标题、内容不能为空！";
 			}
 		}
+		$this->view->http = $http;
 	}
 	
 	public function createThreadAction()
