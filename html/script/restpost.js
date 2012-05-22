@@ -11,14 +11,14 @@ $(document).ready(function() {
 		{
 			var html = ""; 
 			$.each(json, function(k, data){
-				html+= "<div id='forum'><div id='username'>"+data.username+"[发表于："+data.datatime+"]</div><div id='title' >"+data.title+"</div>";
-				html+= "<div id='state' >状态:["+data.status+"]</div>";
+				html+= "<div id='forum'><div id='username'><strong>"+data.username+"</strong>&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;发表于："+data.datatime+"&nbsp;]</div>";
+				html+= "<div id='state' >状态：[&nbsp;"+data.status+"&nbsp;]</div>";
+				html+= "<div id='title' ><strong>标题：</strong>&nbsp;&nbsp;&nbsp;&nbsp;"+data.title+"</div>";
 				html+= "<div id='content'>"+data.content+"</div>";
-				html+= "<div id='division'>-------------------------------------------------------------------------------</div><div id='reply'>";
 				if(data.lastReplyUsername){
-					html+= "<div id='replyname'>"+data.lastReplyUsername+"回复：</div><div id='replycontent'>"+data.lastReply+"</div></div></div>";
+					html+= "<div id='replyname'><strong>"+data.lastReplyUsername+"回复：</strong></div><div id='replycontent'>"+data.lastReply+"</div></div>";
 				} else {
-					html+= "<div id='replycontent'>暂无回复！</div></div></div>";
+					html+= "<div id='replycontent'>暂无回复！</div></div>";
 				}
 			}); 
 			$('#service-forum-content').html(html);
