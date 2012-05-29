@@ -11,6 +11,12 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		$autoloader->registerNamespace('App_');
 	}
 	
+	protected function _initMongoDb()
+	{
+		$mongoDb = new App_Mongo_Db_Adapter('service-forum', Class_Server::getMongoServer());
+		App_Mongo_Db_Collection::setDefaultAdapter($mongoDb);
+	}
+	
 	protected function _initDb()
 	{
 		$db = $this->getPluginResource('db')->getDbAdapter();

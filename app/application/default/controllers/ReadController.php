@@ -18,19 +18,24 @@ class ReadController extends Zend_Controller_Action
 		}
 		$http = parse_url($http,PHP_URL_PATH).parse_url($http,PHP_URL_QUERY).parse_url($http,PHP_URL_FRAGMENT);
 		$http = md5($http);
-		$page = 1;
-		$pagesize = 10;
-		$orgCode = Class_Server::getOrgCode();		
-		$selector = $this->_tb->select(false)
-							  ->from($this->_tb,'*')
-							  ->where('sort = ?',1)
-							  ->where('isShow =?',1)
-							  ->where('orgCode = ?',$orgCode)
-							  ->where('md5httpurl = ?',$http)
-							  ->order('id desc')
-							  ->limitPage($page, $pagesize);
-		$row = $this->_tb->fetchAll($selector)->toArray();
-		$val = Zend_Json::encode($row);
+		$orgCode = Class_Server::getOrgCode();
+// 		$page = 1;
+// 		$pagesize = 10;		
+// 		$selector = $this->_tb->select(false)
+// 							  ->from($this->_tb,'*')
+// 							  ->where('sort = ?',1)
+// 							  ->where('isShow =?',1)
+// 							  ->where('orgCode = ?',$orgCode)
+// 							  ->where('md5httpurl = ?',$http)
+// 							  ->order('id desc')
+// 							  ->limitPage($page, $pagesize);
+// 		$row = $this->_tb->fetchAll($selector)->toArray();
+		$postCo = App_Factory::_m('Post');
+		$row = $postCo->addFilter("md5httpurl",$http)->addFilter("isShow",'1')->fetchAll();
+		foreach ($row as $num){
+			$arrreturn[] = $num;
+		}
+		$val = Zend_Json::encode($arrreturn);
 		$this->getResponse()->appendBody($callback.'('.$val.')');
 		
 		$this->_helper->viewRenderer->setNoRender(true);

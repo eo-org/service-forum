@@ -17,24 +17,37 @@ class IndexController extends Zend_Controller_Action
 			$http =  $_SERVER["HTTP_HOST"];
 		}
 		$http = parse_url($http,PHP_URL_PATH).parse_url($http,PHP_URL_QUERY).parse_url($http,PHP_URL_FRAGMENT);
-		$this->view->http = $http;
 		$orgCode = Class_Server::getOrgCode();
 		if($this->getRequest()->isPost()){
 			$input = $this->getRequest()->getParams();
-			if(!empty($input['username']) && !empty($input['title']) && !empty($input['content'])){
-				$datatime = date('Y-m-d H:i:s',time());
-				$tb = App_Factory::_('Post');
-				$postRow = $tb->createRow();
-				$postRow->setFromArray($input);
-				$http = $input['httpurl'];
-				$postRow->md5httpurl = md5($input['httpurl']);
-				$postRow->datatime = $datatime;
-				$postRow->sort = 1;
-				$postRow->save();
-					
-				$postRow->parentId = $postRow->id;
-				$postRow->save();
-				$this->view->message = "提问成功！内容审核中···";
+			foreach ($input as $num => $arrone){
+				if($num != 'module' && $num != 'controller' && $num != 'action' && $num != 'submit'){
+					$arrin[$num] = $arrone;
+				}
+			}
+			if(!empty($arrin['username']) && !empty($arrin['title']) && !empty($arrin['content'])){
+				$postCo = App_Factory::_m('Post');
+				$row = $postCo->addFilter("username", $arrin['username'])->addFilter("title", $arrin['title'])->addFilter("content", $arrin['content'])->fetchOne();
+				if(!empty($row)){
+					$this->view->message = "对不起,不能重复提交。";
+				}else{	
+					$datatime = date('Y-m-d H:i:s',time());
+					$tb = App_Factory::_m('Post');
+					$postRow = $tb->create();
+					$postRow->setFromArray($arrin);
+					$http = $arrin['httpurl'];
+					$postRow->md5httpurl = md5($arrin['httpurl']);
+					$postRow->datatime = $datatime;
+					$postRow->sort = 1;
+					$postRow->isShow = 0;
+					$postRow->status = '未处理';
+					$postRow->save();
+					$postRow->getId();
+						
+					$postRow->parentId = $postRow->getId();
+					$postRow->save();
+					$this->view->message = "提问成功！内容审核中···";
+				}
 			} else {
 				$this->view->message = "名称、标题、内容不能为空！";
 			}
