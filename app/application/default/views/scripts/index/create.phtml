@@ -18,6 +18,12 @@
 	    <td align='left'><textarea name="content" id="content" cols="35" rows="3" style="width:300px;"></textarea></td>
 	  </tr>
 	  <tr>
+	    <td height="35" align="right" valign="top" style="vertical-align:top;">验证码：</td>
+	    <td align='left'><div class="yz" title="看不清验证码请点击">
+	    <img src="<?php echo Class_Server::getOrgCode();?>/default/index/checkcodeindex/" onclick="this.src='<?php echo Class_Server::getOrgCode();?>/default/index/checkcodeindex/id/'+Math.random()*5;"/> 
+	    </div></td>
+	  </tr>
+	  <tr>
 	    <td height="35" colspan="2" align="center" style="vertical-align:middle;"><input type="submit" name="button" id="submit" value="提交" /></td>
 	  </tr>
 	</table>

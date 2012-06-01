@@ -11,6 +11,7 @@ class IndexController extends Zend_Controller_Action
 	}
 	public function indexAction()
 	{
+		
 		if(isset($_SERVER["HTTP_REFERER"])) {
 			$http =  $_SERVER["HTTP_REFERER"];		
 		} else {
@@ -25,34 +26,40 @@ class IndexController extends Zend_Controller_Action
 					$arrin[$num] = $arrone;
 				}
 			}
-			if(!empty($arrin['username']) && !empty($arrin['title']) && !empty($arrin['content'])){
-				$postCo = App_Factory::_m('Post');
-				$row = $postCo->addFilter("username", $arrin['username'])->addFilter("title", $arrin['title'])->addFilter("content", $arrin['content'])->fetchOne();
-				if(!empty($row)){
-					$this->view->message = "对不起,不能重复提交。";
-				}else{	
-					$datatime = date('Y-m-d H:i:s',time());
-					$tb = App_Factory::_m('Post');
-					$postRow = $tb->create();
-					$postRow->setFromArray($arrin);
-					$http = $arrin['httpurl'];
-					$postRow->md5httpurl = md5($arrin['httpurl']);
-					$postRow->datatime = $datatime;
-					$postRow->sort = 1;
-					$postRow->isShow = 0;
-					$postRow->status = '未处理';
-					$postRow->save();
-					$postRow->getId();
-						
-					$postRow->parentId = $postRow->getId();
-					$postRow->save();
-					$this->view->message = "提问成功！内容审核中···";
+			if(!empty($arrin['captcha']) && $arrin['captcha'] == $_SESSION['code']['code']){
+				if(!empty($arrin['username']) && !empty($arrin['title']) && !empty($arrin['content'])){
+					$postCo = App_Factory::_m('Post');
+					$row = $postCo->addFilter("username", $arrin['username'])->addFilter("title", $arrin['title'])->addFilter("content", $arrin['content'])->fetchOne();
+					if(!empty($row)){
+						$this->view->message = "对不起,不能重复提交。";
+					}else{	
+						$datatime = date('Y-m-d H:i:s',time());
+						$tb = App_Factory::_m('Post');
+						$postRow = $tb->create();
+						$postRow->setFromArray($arrin);
+						$http = $arrin['httpurl'];
+						$postRow->md5httpurl = md5($arrin['httpurl']);
+						$postRow->datatime = $datatime;
+						$postRow->sort = 1;
+						$postRow->isShow = 0;
+						$postRow->status = '未处理';
+						$postRow->save();
+						$postRow->getId();
+							
+						$postRow->parentId = $postRow->getId();
+						$postRow->save();
+						$this->view->message = "提问成功！内容审核中···";
+					}
+				} else {
+					$this->view->message = "名称、标题、内容不能为空！";
 				}
 			} else {
-				$this->view->message = "名称、标题、内容不能为空！";
+				$this->view->message = "验证码错误！";
 			}
 		}
 		$this->view->http = $http;
+		$this->view->captcha = $this->captchaAction();
+// 		echo $this->view->captcha;
 	}
 	
 	public function createThreadAction()
@@ -158,10 +165,32 @@ class IndexController extends Zend_Controller_Action
 		$this->_helper->viewRenderer->setNoRender(true);
 		$this->_helper->layout()->disableLayout();
 	}
-	public function checkcodeindexAction()
-	{
-	}
 	public function captchaAction()
 	{
+		$type = $this->getRequest()->getParam('type');
+		$this->codeSession = new Zend_Session_Namespace('code'); //在默认构造函数里实例化	
+		$captcha = new Zend_Captcha_Image(array(
+				'font'=>'../html/images/simhei.ttf', //字体文件路径
+				'fontsize'=>24, //字号
+				'imgdir'=>'../html/images/', //验证码图片存放位置
+				'session'=>$this->codeSession, //验证码session值
+				'width'=>120, //图片宽
+				'height'=>50,   //图片高
+				'wordlen'=>5 )); //字母数
+		 
+		$captcha->setGcFreq(3); //设置删除生成的旧的验证码图片的随机几率
+		$captcha->generate(); //生成图片
+// 		$this->view->ImgDir = $captcha->getImgDir();
+		$this->view->captchaId = $captcha->getId(); //获取文件名，md5编码
+		$this->codeSession->code=$captcha->getWord(); //获取当前生成的验证字符串
+		$this->view->ImgDir = '/images/';
+		if($type == 1){
+			echo $this->view->ImgDir.$this->view->captchaId.".png";
+			exit;
+		} else {
+			return $this->view->ImgDir.$this->view->captchaId.".png";
+		}
+// 		echo $this->codeSession->code;
+// 		echo $this->view->ImgDir,$this->view->captchaId;	
 	}
 }

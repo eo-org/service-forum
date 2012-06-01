@@ -130,11 +130,6 @@ class Admin_IndexController extends Zend_Controller_Action
 	public function getFormJsonAction()
 	{
 		$pageSize = 20;
-// 		$selector = $this->_tb->select(false)
-// 							  ->where('sort = ?',1)
-// 							  ->where('orgCode = ?',Class_Server::getOrgCode())
-// 							  ->order('id desc')
-// 							  ->limitPage(1, $pageSize);
 		$postCo = App_Factory::_m('Post');
 		$postCo->addFilter("orgCode", Class_Server::getOrgCode());
 		$postCo->sort('_id', -1);
@@ -155,7 +150,6 @@ class Admin_IndexController extends Zend_Controller_Action
 				}
 			}
 		}
-		
 		$data = $postCo->fetchAll(true);
 		$dataSize = $postCo->count();
 		$result['data'] = $data;
@@ -164,14 +158,5 @@ class Admin_IndexController extends Zend_Controller_Action
 		$result['currentPage'] = $currentPage;
 		
 		return $this->_helper->json($result);
-		
-// 		$rowset = $this->_tb->fetchAll($selector)->toArray();
-// 		$result['data'] = $rowset;
-// 		$result['pageSize'] = $pageSize;
-	
-// 		if(empty($result['currentPage'])) {
-// 			$result['currentPage'] = 1;
-// 		}
-// 		return $this->_helper->json($result);
 	}
 }
