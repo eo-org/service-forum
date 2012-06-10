@@ -54,7 +54,9 @@ class IndexController extends Zend_Controller_Action
 						$postRow->md5httpurl = md5($arrin['httpurl']);
 						$postRow->datatime = $datatime;
 						$postRow->sort = 1;
-						$postRow->avatar = $arrin['avatar'];
+						if($setrow['avatarcheck'] == 'on'){
+							$postRow->avatar = $arrin['avatar'];
+						}
 						$postRow->isShow = 0;
 						$postRow->status = '未处理';
 						$postRow->save();

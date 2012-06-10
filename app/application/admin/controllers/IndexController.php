@@ -45,6 +45,9 @@ class Admin_IndexController extends Zend_Controller_Action
 	{
 		$id = $this->getRequest()->getParam('id');
 		$orgCode = Class_Server::getOrgCode();
+		$forumCo = App_Factory::_m('Forum');
+		$forumDoc = $forumCo->addFilter("forumid", $orgCode)->fetchOne();
+		$setrow = empty($forumDoc)?$forumDoc:$forumDoc->toArray();
 		$postCo = App_Factory::_m('Post');
 		$row = $postCo->addFilter("parentId", $id)->sort('_id',1)->fetchAll();
 		foreach ($row as $num ){
@@ -79,10 +82,15 @@ class Admin_IndexController extends Zend_Controller_Action
 			$this->view->state = 1;
 		}
 		$this->_helper->template->actionMenu(array('delete'));
+		$this->view->setrow = $setrow;
 	}
 		
 	public function editAction()
 	{
+		$orgCode = Class_Server::getOrgCode();
+		$forumCo = App_Factory::_m('Forum');
+		$forumDoc = $forumCo->addFilter("forumid", $orgCode)->fetchOne();
+		$this->view->setrow = empty($forumDoc)?$forumDoc:$forumDoc->toArray();
 		$id = $this->getRequest()->getParam('id');
 		$title = $this->getRequest()->getParam('title');
 		$content = $this->getRequest()->getParam('content');
