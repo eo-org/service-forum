@@ -9,7 +9,7 @@ class IndexController extends Zend_Controller_Action
 	}
 	public function indexAction()
 	{
-		
+
 		if(isset($_SERVER["HTTP_REFERER"])) {
 			$http =  $_SERVER["HTTP_REFERER"];		
 		} else {
@@ -160,7 +160,7 @@ class IndexController extends Zend_Controller_Action
 		$type = $this->getRequest()->getParam('type');
 		$this->codeSession = new Zend_Session_Namespace('code'); //在默认构造函数里实例化	
 		$captcha = new Form_Captcha(array(
-				'font'=>'../app/font/simhei.ttf', //字体文件路径
+				'font'=>APP_PATH.'/font/SIMHEI.TTF', //字体文件路径
 				'fontsize'=>24, //字号
 				'imgdir'=>'../html/captcha/', //验证码图片存放位置
 				'session'=>$this->codeSession, //验证码session值
