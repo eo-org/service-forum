@@ -69,7 +69,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 				'controller' => 'index',
 				'action'     => 'index'
 			),
-			array('account' => '([a-z0-9]+)')
+			array('orgCode' => '([a-z0-9]+)')
 		);
 		$router->addRoute('default', $defaultRoute);
 //        $router->addRoute('rest', new Zend_Rest_Route($controller, array(), array('rest')));
