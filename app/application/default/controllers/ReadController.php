@@ -31,7 +31,7 @@ class ReadController extends Zend_Controller_Action
 // 							  ->limitPage($page, $pagesize);
 // 		$row = $this->_tb->fetchAll($selector)->toArray();
 		$postCo = App_Factory::_m('Post');
-		$row = $postCo->addFilter("md5httpurl",$http)->addFilter("isShow",'1')->fetchAll();
+		$row = $postCo->addFilter("md5httpurl",$http)->addFilter("isShow",'1')->sort('_id',-1)->fetchAll();
 		foreach ($row as $num){
 			$arrreturn[] = $num;
 		}

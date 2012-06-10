@@ -1,8 +1,41 @@
-<?php $row = $this->row;?>
-<div id='username' class='username' style='border:1px solid #000;width:780px;padding:5px;'>
-<?php echo $row['username']."问：".$row['title'];?><div id='status' style='width:150px;text-align:center;float:right;'>[状态：<?php echo $row['status'];?>]</div>
-</div>
-<div id='messagecontent' class='messagecontent' style='border-left:1px solid #000; border-right:1px solid #000;border-bottom:1px solid #000;width:780px; padding:5px;'>
-	<?php echo $row['content'];?>
-	<div id='editdetail' style='width:50px;text-align:center;float:right;'><a href='#'>修改</a></div>
-</div>
+<?php $row = empty($this->row)?$this->row:$this->row->toArray();?>
+<form id="form1" name="form1" method="post" action="">
+<input type="submit" name="button" id="button" value="保存" />
+<table width="360px" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td height="32" align="center">是否显示</td>
+    <td align="center">标题</td>
+    <td align="center">内容</td>
+  </tr>
+  <tr>
+    <td height="32" align="center"><input type="checkbox" name="logincheck" id="logincheck" <?php echo $row['logincheck']=='off'?null:"checked='checked'";?> /></td>
+    <td align="center">在线咨询</td>
+    <td align="center"><input type="text" name="logintext" id="logintext" value="<?php echo empty($row['logintext'])?"在线咨询":$row['logintext'];?>" /></td>
+  </tr>
+  <tr>
+    <td height="32" align="center">&nbsp;</td>
+    <td align="center">标题</td>
+    <td align="center"><input type="text" name="titletext" id="titletext" value="<?php echo empty($row['titletext'])?"标题":$row['titletext'];?>" /></td>
+  </tr>
+  <tr>
+    <td height="32" align="center">&nbsp;</td>
+    <td align="center">咨询内容</td>
+    <td align="center"><input type="text" name="contenttext" id="contenttext" value="<?php echo empty($row['contenttext'])?"咨询内容":$row['contenttext'];?>"/></td>
+  </tr>
+  <tr>
+    <td height="32" align="center">&nbsp;</td>
+    <td align="center">我的呢称</td>
+    <td align="center"><input type="text" name="nametext" id="nametext" value="<?php echo empty($row['nametext'])?"我的呢称":$row['nametext'];?>" /></td>
+  </tr>
+  <tr>
+    <td height="32" align="center"><input type="checkbox" name="avatarcheck" id="avatarcheck" <?php echo $row['avatarcheck']=='off'?null:"checked='checked'";?>/></td>
+    <td align="center">选择头像</td>
+    <td align="center"><input type="text" name="avatartext" id="avatartext" value="<?php echo empty($row['avatartext'])?"选择头像":$row['avatartext'];?>"/></td>
+  </tr>
+  <tr>
+    <td height="32" align="center"><input type="checkbox" name="captchacheck" id="captchacheck" <?php echo $row['captchacheck']=='off'?null:"checked='checked'";?>/></td>
+    <td align="center">验证码</td>
+    <td align="center"><input type="text" name="captchatext" id="captchatext" value="<?php echo empty($row['captchatext'])?"验证码":$row['captchatext'];?>"/></td>
+  </tr>
+</table>
+</form>

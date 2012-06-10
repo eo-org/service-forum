@@ -6,6 +6,7 @@
 	<br>
 	<div id='message' class='message' style="width:800px;">
 		<div id='username' class='username' style="border:1px solid #000;width:780px;padding:5px;">
+			<img src='/images/avatar/<?php echo $row[0]['avatar'];?>.gif' />
 			<?php echo $row[0]['username'];?>问：<?php echo $row[0]['title'];?><div id='status' style='width:150px;text-align:center;float:right;'>[状态：<?php echo $row[0]['status'];?>]</div>
 		</div>
 		<div id='messagecontent' class='messagecontent' style='border-left:1px solid #000; border-right:1px solid #000;border-bottom:1px solid #000;width:780px; padding:5px;'>
@@ -54,7 +55,7 @@
 <?php }?>
 <script type="text/javascript">
 $('#editdetail').live("click",function(){
-	var inputtitle = "<?php echo $row[0]['username'];?>问：<input type='text' name='title' id='title' size='50' value='<?php echo $row[0]['title'];?>' />";
+	var inputtitle = "<img src='/images/avatar/<?php echo $row[0]['avatar'];?>.gif' /><?php echo $row[0]['username'];?>问：<input type='text' name='title' id='title' size='50' value='<?php echo $row[0]['title'];?>' />";
 	inputtitle+= "<div id='status' style='width:150px;text-align:center;float:right;'>状态：<select name='selstatus' id='selstatus'><option>未处理</option><option>已处理</option><option>忽视</option></select></div>";
 	$('#username').html(inputtitle);
 	var textcontent = "<textarea name='content' id='content' cols='80' rows='3'><?php echo $row[0]['content'];?></textarea>";

@@ -1,28 +1,44 @@
+<?php $row = empty($this->row)?$this->row:$this->row->toArray();?>
 <form method="post" action="/<?php echo Class_Server::getOrgCode()?>/default/index/index">
 	<table width="700px" border="0" cellpadding="0" cellspacing="0" style="font-size:12px">
 	  <tr>
-	    <td height="32" colspan="2" align="left" style="color:#f00;font-size:21px;">在线咨询<div style="font-size:12px;color:#f00;"><?php echo $this->message;?></div></td>
+	    <td height="32" colspan="2" align="left" style="color:#f00;font-size:21px;"><?php if($row['logincheck']=='on'){ echo empty($row['logintext'])?"在线咨询":$row['logintext']; }?>
+	    <div style="font-size:12px;color:#f00;"><?php echo $this->message;?></div></td>
 	  </tr> 
 	  <tr>
-	    <td height="32" align="right"  >标题：</td>
+	    <td height="32" width="90px" align="right"  ><?php echo empty($row['titletext'])?"标题":$row['titletext'];?>：</td>
 	    <td align='left'><input type="text" name="title" id="title" size="70" /></td>
 	  </tr>
 	  <tr>
-	    <td height="32" align="right" style='margin-top: 10px;margin-left: 40px;float:left;'>咨询内容：</td>
+	    <td height="32" width="90px" align="right" style='margin-top: 10px;margin-left: 40px;float:left;'><?php echo empty($row['contenttext'])?"咨询内容":$row['contenttext'];?>：</td>
 	    <td align='left'><textarea name="content" id="content" cols="30" rows="5" style="width:498px;"></textarea></td>
 	  </tr>
 	  <tr>
-	    <td width="100px" height="32" align="right">我的昵称：</td>
+	    <td width="90px" height="32" align="right"><?php echo empty($row['nametext'])?"我的呢称":$row['nametext'];?>：</td>
 	    <td align='left'><input type="text" name="username" id="username" size="20" /></td>
 	  </tr>
+	  <?php if($row['avatarcheck']=='on'){?>
 	  <tr>
-	    <td height="32" align="right" valign="top" style="vertical-align:top;">验证码：</td>
+	    <td width="90px" height="32" align="right"><?php echo empty($row['avatartext'])?"选择头像":$row['avatartext'];?>：</td>
+	    <td align='left'>
+	    <?php for($i=1;$i<=10;$i++){?>
+	    
+	    	<img src='/images/avatar/<?php echo $i;?>.gif' />
+	    	<input type='radio' id='avatar<?php echo $i;?>' name='avatar' value='<?php echo $i;?>' <?php echo $i==1?"checked='checked'":null;?> />
+	    
+	    <?php }?>
+	    </td>
+	  </tr>
+	  <?php } if($row['captchacheck']=='on'){?>
+	  <tr>
+	    <td height="32" align="right" valign="top" style="vertical-align:top;"><?php echo empty($row['captchatext'])?"验证码":$row['captchatext'];?>：</td>
 	    <td align='left'>
 	    <input type="text" name=captcha id="captcha" size="5" />
 	    <div class="yz" title="看不清验证码请点击">
 	    <img id='imgcaptcha' src="<?php echo $this->captcha;//onclick="this.src='index/captcha'"?>" /> 
 	    </div></td>
 	  </tr>
+	  <?php }?>
 	  <tr>
 	    <td height="32" colspan="2" align="center" style="vertical-align:middle;">
 	    	<input type='hidden' name='httpurl' id='httpurl' value='<?php echo $this->http?>' />

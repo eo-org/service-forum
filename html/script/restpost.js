@@ -11,7 +11,8 @@ $(document).ready(function() {
 		{
 			var html = ""; 
 			$.each(json, function(k, data){
-				html+= "<div id='forum'><div id='username'><strong>"+data.username+"</strong>&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;发表于："+data.datatime+"&nbsp;]</div>";
+				html+= "<div id='forum'><div id='username'><strong>";
+				html+= "<img src='"+httpurl+"/images/avatar/"+data.avatar+".gif' />"+data.username+"</strong>&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;发表于："+data.datatime+"&nbsp;]</div>";
 				html+= "<div id='state' >状态：[&nbsp;"+data.status+"&nbsp;]</div>";
 				html+= "<div id='title' >标题：&nbsp;&nbsp;&nbsp;&nbsp;"+data.title+"</div>";
 				html+= "<div id='content'>"+data.content+"</div>";

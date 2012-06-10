@@ -103,7 +103,7 @@ class Admin_IndexController extends Zend_Controller_Action
 		}
 		$postDoc = $postCo->find($id);
 		$this->view->row= $postDoc->toArray();
-		$post = $this->view->render('edit/edit.phtml');
+		$post = $this->view->render('edit/editpost.phtml');
 		echo $post;
 		exit;
 	}

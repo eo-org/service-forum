@@ -19,6 +19,9 @@ class IndexController extends Zend_Controller_Action
 		}
 		$http = parse_url($http,PHP_URL_PATH).parse_url($http,PHP_URL_QUERY).parse_url($http,PHP_URL_FRAGMENT);
 		$orgCode = Class_Server::getOrgCode();
+		$forumCo = App_Factory::_m('Forum');
+		$forumDoc = $forumCo->addFilter("forumid", $orgCode)->fetchOne();
+		
 		if($this->getRequest()->isPost()){
 			$input = $this->getRequest()->getParams();
 			foreach ($input as $num => $arrone){
@@ -26,7 +29,19 @@ class IndexController extends Zend_Controller_Action
 					$arrin[$num] = $arrone;
 				}
 			}
-			if(!empty($arrin['captcha']) && $arrin['captcha'] == $_SESSION['code']['code']){
+			$setrow = empty($forumDoc)?$forumDoc:$forumDoc->toArray();
+			$if = 0;
+			if($setrow['captchacheck'] == 'on'){
+				if(!empty($arrin['captcha']) && $arrin['captcha'] == $_SESSION['code']['code']){
+					$if = 1;
+				}else {
+					$if = 0;
+					$this->view->message = "验证码错误！";
+				}
+			} else {
+				$if = 1;
+			}
+			if($if == 1){
 				if(!empty($arrin['username']) && !empty($arrin['title']) && !empty($arrin['content'])){
 					$postCo = App_Factory::_m('Post');
 					$row = $postCo->addFilter("username", $arrin['username'])->addFilter("title", $arrin['title'])->addFilter("content", $arrin['content'])->fetchOne();
@@ -41,6 +56,7 @@ class IndexController extends Zend_Controller_Action
 						$postRow->md5httpurl = md5($arrin['httpurl']);
 						$postRow->datatime = $datatime;
 						$postRow->sort = 1;
+						$postRow->avatar = $arrin['avatar'];
 						$postRow->isShow = 0;
 						$postRow->status = '未处理';
 						$postRow->save();
@@ -53,12 +69,12 @@ class IndexController extends Zend_Controller_Action
 				} else {
 					$this->view->message = "名称、标题、内容不能为空！";
 				}
-			} else {
-				$this->view->message = "验证码错误！";
 			}
+		
 		}
 		$this->view->http = $http;
 		$this->view->captcha = $this->captchaAction();
+		$this->view->row = $forumDoc;
 // 		echo $this->view->captcha;
 	}
 	
@@ -175,8 +191,8 @@ class IndexController extends Zend_Controller_Action
 				'imgdir'=>'../html/images/', //验证码图片存放位置
 				'session'=>$this->codeSession, //验证码session值
 				'width'=>120, //图片宽
-				'height'=>50,   //图片高
-				'wordlen'=>5 )); //字母数
+				'height'=>32,   //图片高
+				'wordlen'=>4 )); //字母数
 		 
 		$captcha->setGcFreq(3); //设置删除生成的旧的验证码图片的随机几率
 		$captcha->generate(); //生成图片
