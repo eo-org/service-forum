@@ -6,7 +6,6 @@ class IndexController extends Zend_Controller_Action
 	private $_pagelist;
 	public function init()
 	{
-		$this->_tb = Class_Base::_('Post');
 	}
 	public function indexAction()
 	{
@@ -75,30 +74,6 @@ class IndexController extends Zend_Controller_Action
 		$this->view->captcha = $this->captchaAction();
 		$this->view->row = $forumDoc;
 // 		echo $this->view->captcha;
-	}
-	
-	public function createThreadAction()
-	{
-		$orgCode = Class_Server::getOrgCode();
-		$input = $this->getRequest()->getParams();
-		if(!empty($input['username']) && !empty($input['title']) && !empty($input['content'])){
-			$datatime = date('Y-m-d H:i:s',time());
-			$tb = App_Factory::_('Post');
-			$postRow = $tb->createRow();
-			$postRow->setFromArray($input);
-			
-			$postRow->md5httpurl = md5($input['httpurl']);
-			$postRow->datatime = $datatime;
-			$postRow->sort = 1;
-			$postRow->save();
-			
-			$postRow->parentId = $postRow->id;
-			$postRow->save();
-			$state = 1;
-		} else {
-			$state = 2;
-		}
-		//$this->_forward('index','index','default',array('state'=>$state));
 	}
 	
 	public function addAction()

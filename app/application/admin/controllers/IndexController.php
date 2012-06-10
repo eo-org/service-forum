@@ -3,7 +3,6 @@ class Admin_IndexController extends Zend_Controller_Action
 {
 	public function init()
 	{
-		//$this->_tb = Class_Base::_('Post');
 	}
 	public function indexAction()
 	{
