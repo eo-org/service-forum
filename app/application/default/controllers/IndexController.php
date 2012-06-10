@@ -1,5 +1,5 @@
 <?php
-require CONTAINER_PATH.'/app/application/default/forms/Page.php';
+require CONTAINER_PATH.'/app/application/default/forms/Captcha.php';
 class IndexController extends Zend_Controller_Action
 {
 	private $_tb;
@@ -7,7 +7,6 @@ class IndexController extends Zend_Controller_Action
 	public function init()
 	{
 		$this->_tb = Class_Base::_('Post');
-		$this->_pagelist = new Form_Page();
 	}
 	public function indexAction()
 	{
@@ -156,7 +155,7 @@ class IndexController extends Zend_Controller_Action
 		$num = $rownum['num'];
 		$this->view->row = $row;
 		$this->view->rowset = $rowset;
-		$this->view->pageshow = $this->_pagelist->getPage($page,$num,"/default/index/index/orgCode/".$row['orgCode'],$pagesize);
+// 		$this->view->pageshow = $this->_pagelist->getPage($page,$num,"/default/index/index/orgCode/".$row['orgCode'],$pagesize);
 	}
 	
 	public function selAction()
@@ -185,7 +184,7 @@ class IndexController extends Zend_Controller_Action
 	{
 		$type = $this->getRequest()->getParam('type');
 		$this->codeSession = new Zend_Session_Namespace('code'); //在默认构造函数里实例化	
-		$captcha = new Zend_Captcha_Image(array(
+		$captcha = new Form_Captcha(array(
 				'font'=>'../html/images/simhei.ttf', //字体文件路径
 				'fontsize'=>24, //字号
 				'imgdir'=>'../html/images/', //验证码图片存放位置
