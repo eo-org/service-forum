@@ -1,12 +1,9 @@
 <?php
 class ReadController extends Zend_Controller_Action
 {
-	private $_tb;
 	public function init()
-	{
-		
+	{		
 	}
-	
 	public function replyAction()
 	{	
 		$callback = $this->getRequest()->getParam('callback');	
