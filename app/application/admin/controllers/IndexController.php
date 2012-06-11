@@ -70,7 +70,8 @@ class Admin_IndexController extends Zend_Controller_Action
 				$postDoc->setFromArray($arrdata);
 				$postDoc->save();
 				$postInDoc = $postCo->create();
-				$arrdata['sort'] = count($viewrow)+1;
+				$i = end($viewrow);
+				$arrdata['sort'] = $i['sort']+1;
 				$postInDoc->setFromArray($arrdata);
 				$postInDoc->save();
 				$this->_helper->redirector()->gotoSimple('create');
@@ -122,7 +123,33 @@ class Admin_IndexController extends Zend_Controller_Action
 		$postCo = App_Factory::_m('Post');
 		if($state == 2){
 			$postDoc = $postCo->find($id);
+			$postid = $postDoc->toArray();
+			$postrow = $postCo->find($postid['parentId']);
+			$row = $postrow->toArray();
 			$postDoc->delete();
+			if($postid['lastReply'] == $row['lastReply']){
+				$forumDoc = $postCo->addFilter("parentId", $postid['parentId'])->sort('sort',-1)->fetchAll();
+				foreach ($forumDoc as $num => $arrone){
+					if($arrone['sort']==1){
+						$arrup = array(
+								'lastReplyUsername' => '',
+								'lastReply' => '',
+								'lastDatatime' => ''
+						);
+					}else{
+						$arrup = array(
+								'lastReplyUsername' => $arrone['lastReplyUsername'],
+								'lastReply' => $arrone['lastReply'],
+								'lastDatatime' => $arrone['lastDatatime']
+								);
+					}
+					break;		
+				}
+				$postrow->setFromArray($arrup);
+				$postrow->save();
+				exit;
+			}
+			
 		} else {
 			$postDoc = $postCo->addFilter("parentId", $id)->fetchAll();
 			foreach ($postDoc as $num){
