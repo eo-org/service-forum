@@ -48,6 +48,7 @@
 	</table>
 </form>
 <script type='text/javascript'>
+<?php if($row['captchacheck']=='on'){?>
 $('#imgcaptcha').click(function(){
 	$.ajax({
 		type: "POST",
@@ -58,4 +59,5 @@ $('#imgcaptcha').click(function(){
 	});
 	return false;
 });
+<?php }?>
 </script>
