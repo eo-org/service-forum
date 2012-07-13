@@ -1,5 +1,5 @@
 <?php $setrow = $this->setrow; if($this->state == 1){ ?>
-	<div>对不起，您没有权限观看该页面！<a href='/<?php echo Class_Server::getOrgCode()?>/admin/index/'>返回</a></div>
+	<div class="control">对不起，您没有权限观看该页面！<a href='/<?php echo Class_Server::getOrgCode()?>/admin/index/'>返回</a></div>
 <?php } else { ?>
 <div id='messagedetail' class='messagedetail' style='font-size:16px;width:800px;margin:0 auto;'>
 	<?php $row = $this->row;//var_export($row);?>

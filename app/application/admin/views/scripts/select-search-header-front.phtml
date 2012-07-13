@@ -52,10 +52,12 @@ $this->presetFields = $this->presetFields == null ? array() : $this->presetField
                 <option value='<?=$val ?>'><?=$label ?></option>
                 <?} ?>
             </select>
-            <? } else {
+            <?
+                } else {
                     echo "&nbsp;";
                 }
-            } else { ?>
+            } else {
+            ?>
             <input type='text' class='filter-field' name='<?='filter_'.$key ?>' value='' />
             <?
             }
@@ -109,7 +111,7 @@ foreach($this->selectFields as $key => $value) {
         $optionsString.= $key.':{';
         $valuePair = array();
         foreach($value as $k => $v) {
-            $valuePair[] = $k.':\''.$v.'\'';
+            $valuePair[] = '\''.$k.'\':\''.$v.'\'';
         }
 //        if() {
 //        	$optionsString = substr($optionsString, 0, -1);
@@ -175,7 +177,7 @@ cm.appendItem(
 	}
 }
 ?>
-EventMessenger.bind("updateWithFilter", function(searchQuery) {
+EventMessenger.bind("updateAdminSearch", function(searchQuery) {
 	ajaxGrid.postAction(searchQuery);
 });
 

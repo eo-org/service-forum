@@ -11,6 +11,7 @@ class Admin_EditController extends Zend_Controller_Action
 	
 	public function editAction()
 	{
+		$this->_helper->template->head('创建留言板');
 		$orgCode = Class_Server::getOrgCode();
 		$forumCo = App_Factory::_m('Forum');
 		$forumDoc = $forumCo->addFilter("forumid", $orgCode)->fetchOne();

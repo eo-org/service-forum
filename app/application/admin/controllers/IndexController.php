@@ -43,6 +43,7 @@ class Admin_IndexController extends Zend_Controller_Action
 	
 	public function createAction()
 	{
+		$this->_helper->template->head('留言信息修改及回复');
 		$id = $this->getRequest()->getParam('id');
 		$orgCode = Class_Server::getOrgCode();
 		$forumCo = App_Factory::_m('Forum');
@@ -88,6 +89,7 @@ class Admin_IndexController extends Zend_Controller_Action
 		
 	public function editAction()
 	{
+		
 		$orgCode = Class_Server::getOrgCode();
 		$forumCo = App_Factory::_m('Forum');
 		$forumDoc = $forumCo->addFilter("forumid", $orgCode)->fetchOne();
@@ -163,7 +165,7 @@ class Admin_IndexController extends Zend_Controller_Action
 	
 	public function getFormJsonAction()
 	{
-		$pageSize = 20;
+		$pageSize = 5;
 		$postCo = App_Factory::_m('Post');
 		$postCo->addFilter("orgCode", Class_Server::getOrgCode());
 		$postCo->sort('_id', -1);
@@ -184,6 +186,7 @@ class Admin_IndexController extends Zend_Controller_Action
 				}
 			}
 		}
+		$postCo->setPage($currentPage)->setPageSize($pageSize);
 		$data = $postCo->fetchAll(true);
 		$dataSize = $postCo->count();
 		$result['data'] = $data;

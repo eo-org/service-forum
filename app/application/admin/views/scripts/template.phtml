@@ -1,9 +1,15 @@
 <?php
 $naviArr = array(
 	array(
+		'httpurl' => 'http://forum.eo.test',
 		'orgCode' => Class_Server::getOrgCode(),
-		'title' => '留言管理'
-	)
+		'moduleName' => 'admin/index/',
+		'title' => '留言管理'),
+	array(
+		'httpurl' => 'http://forum.eo.test',
+		'orgCode' => Class_Server::getOrgCode(),
+		'moduleName' => 'admin/edit/edit',
+		'title' => '编辑留言板'),
 );
 
 $request = Zend_Controller_Front::getInstance()->getRequest();
