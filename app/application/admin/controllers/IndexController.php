@@ -31,7 +31,8 @@ class Admin_IndexController extends Zend_Controller_Action
 				'click' => array(
 						'action' => 'contextMenu',
 						'menuItems' => array(
-								array('查看', '/'.$orgCode.'/admin/index/create/id/')
+								array('查看', '/'.$orgCode.'/admin/index/create/id/'),
+								array('删除', '/'.$orgCode.'/admin/index/delete/id/')
 						)
 				),
 				'initSelectRun' => 'true',
@@ -83,7 +84,6 @@ class Admin_IndexController extends Zend_Controller_Action
 		} else {
 			$this->view->state = 1;
 		}
-		$this->_helper->template->actionMenu(array('delete'));
 		$this->view->setrow = $setrow;
 	}
 		
