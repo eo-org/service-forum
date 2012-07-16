@@ -1,14 +1,10 @@
 <?php
 $naviArr = array(
 	array(
-		'httpurl' => 'http://forum.eo.test',
-		'orgCode' => Class_Server::getOrgCode(),
-		'moduleName' => 'admin/index/',
+		'url' => '/'.Class_Server::getOrgCode().'/admin/index/',
 		'title' => '留言管理'),
 	array(
-		'httpurl' => 'http://forum.eo.test',
-		'orgCode' => Class_Server::getOrgCode(),
-		'moduleName' => 'admin/edit/edit',
+		'url' => '/'.Class_Server::getOrgCode().'/admin/edit/edit',
 		'title' => '编辑留言板'),
 );
 
